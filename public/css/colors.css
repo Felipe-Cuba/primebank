@@ -1,0 +1,28 @@
+body {
+  background-color: #f3f3f3;
+}
+
+.bg-primary {
+  background-color: #3b5fff !important;
+}
+
+.btn-primary {
+  background-color: #3b5fff !important;
+  border: 1px solid #2748dd !important;
+}
+
+.btn-primary:hover {
+  background-color: #2748dd !important;
+  transition: .2s;
+}
+
+.btn-secondary{
+  background-color: #ffbd2e !important;
+  border: 1px solid #ffa42e !important;
+  color: #333 !important;
+}
+
+.btn-secondary:hover {
+  background-color: #ffa42e !important;
+  transition: .2s;
+}

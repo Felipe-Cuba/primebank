@@ -1,0 +1,80 @@
+/* main.css */
+
+/* Estilos para o cabeçalho */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar-brand {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+  color: #fff; /* Cor branca para os links */
+  margin-left: 10px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffbd2e !important;
+    transition: .2s;
+}
+
+.navbar-nav .nav-link i {
+  margin-right: 5px;
+}
+
+/* Estilos para o rodapé */
+footer {
+  background-color: #333; /* Cor azul escura */
+  color: #fff; /* Cor branca para o texto */
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+
+.home-page {
+  text-align: center;
+  padding: 50px;
+}
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.btn {
+  font-size: 16px;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+.row {
+  margin-top: 50px;
+}
+
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+

@@ -13,7 +13,7 @@ USE `primebank`;
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `primebank`.`usuarios` (
+    IF NOT EXISTS `primebank`.`usuario` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(100) NOT NULL,
         `email` VARCHAR(60) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `primebank`.`contas` (
+    IF NOT EXISTS `primebank`.`conta` (
         `agencia` INT NOT NULL,
         `numero` INT NOT NULL,
         `tipo_conta` INT NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `primebank`.`extratos` (
+    IF NOT EXISTS `primebank`.`extrato` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `valor` FLOAT NOT NULL,
         `acao` VARCHAR(8) NOT NULL,

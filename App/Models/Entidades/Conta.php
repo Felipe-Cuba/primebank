@@ -4,20 +4,20 @@ namespace App\Models\Entidades;
 
 class Conta
 {
-    private int $agencia;
-    private int $numero;
+    private int $id;
+    private int $id_agencia;
     private int $tipo_conta;
     private float $saldo;
-    private int $usuarios_id;
+    private int $id_usuario;
 
-    public function getAgencia(): int
+    public function getId(): int
     {
-        return $this->agencia;
+        return $this->id;
     }
 
-    public function getNumero(): int
+    public function getIdAgencia(): int
     {
-        return $this->numero;
+        return $this->id_agencia;
     }
 
     public function getTipoConta(): int
@@ -40,9 +40,9 @@ class Conta
         $this->saldo = $saldo;
     }
 
-    public function getUsuariosId(): int
+    public function getUsuario(): int
     {
-        return $this->usuarios_id;
+        return $this->id_usuario;
     }
 
 }

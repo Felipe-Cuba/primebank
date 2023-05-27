@@ -7,11 +7,10 @@ use DateTime;
 class Extrato
 {
     private int $id;
+    private int $id_conta;
     private float $valor;
     private string $acao;
     private string $data_cadastro;
-    private int $conta_agencia;
-    private int $conta_numero;
 
     public function getId(): int
     {
@@ -33,14 +32,9 @@ class Extrato
         return new DateTime($this->data_cadastro);
     }
 
-    public function getContaAgencia(): int
+    public function getIdConta(): int
     {
-        return $this->conta_agencia;
-    }
-
-    public function getContaNumero(): int
-    {
-        return $this->conta_numero;
+        return $this->id_conta;
     }
 
 }

@@ -1,14 +1,15 @@
 <div class="container home-page">
     <h1>Bem-vindo ao PrimeBank</h1>
     <p>Seu banco confiável para todas as suas necessidades financeiras.</p>
-    <a href="http://<?php echo APP_HOST; ?>/auth/login.php" class="btn btn-primary">Acessar conta</a>
+    <a href="http://<?php echo APP_HOST; ?>/users" class="btn btn-primary">Acessar conta</a>
 
     <div class="row mt-5">
         <div class="col-md-4">
             <div class="card">
                 <h2>Conta Corrente</h2>
                 <p>Gerencie suas finanças diárias com a nossa conta corrente fácil de usar.</p>
-                <a href="http://<?php echo APP_HOST; ?>/info/conta_corrente.php" class="btn btn-secondary">Abrir conta</a>
+                <a href="http://<?php echo APP_HOST; ?>/info/conta_corrente.php" class="btn btn-secondary">Abrir
+                    conta</a>
             </div>
         </div>
         <div class="col-md-4">

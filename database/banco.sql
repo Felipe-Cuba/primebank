@@ -13,57 +13,119 @@ USE `primebank`;
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `primebank`.`usuario` (
+    IF NOT EXISTS `Banco`.`usuario` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(100) NOT NULL,
-        `email` VARCHAR(60) NOT NULL,
-        `senha` VARCHAR(32) NOT NULL,
+        `email` VARCHAR(50) NOT NULL,
+        `senha` VARCHAR(45) NOT NULL,
         `documento` VARCHAR(14) NOT NULL,
         `data_nasc` DATE NULL,
-        `data_cadastro` DATETIME(1) GENERATED ALWAYS AS (NOW()) VIRTUAL,
-        `tipo` INT NOT NULL,
+        `data_cadastro` DATETIME GENERATED ALWAYS AS (NOW()) VIRTUAL,
+        `tipo` INT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 
--- Table `primebank`.`contas`
+-- Table `Banco`.`banco`
 
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `primebank`.`conta` (
-        `agencia` INT NOT NULL,
-        `numero` INT NOT NULL,
-        `tipo_conta` INT NOT NULL,
-        `saldo` FLOAT NULL,
-        `usuarios_id` INT NOT NULL,
-        PRIMARY KEY (`agencia`, `numero`),
-        INDEX `fk_contas_usuarios_idx` (`usuarios_id` ASC),
-        CONSTRAINT `fk_contas_usuarios` FOREIGN KEY (`usuarios_id`) REFERENCES `primebank`.`usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    IF NOT EXISTS `Banco`.`banco` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `numero` INT NULL,
+        `nome` VARCHAR(45) NULL,
+        PRIMARY KEY (`id`)
     ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 
--- Table `primebank`.`extratos`
+-- Table `Banco`.`agencia`
 
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `primebank`.`extrato` (
+    IF NOT EXISTS `Banco`.`agencia` (
         `id` INT NOT NULL AUTO_INCREMENT,
+        `id_banco` INT NOT NULL,
+        `nome` VARCHAR(45) NULL,
+        PRIMARY KEY (`id`),
+        INDEX `fk_agencia_banco1_idx` (`id_banco` ASC),
+        CONSTRAINT `fk_agencia_banco1` FOREIGN KEY (`id_banco`) REFERENCES `Banco`.`banco` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    ) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+
+-- Table `Banco`.`conta`
+
+-- -----------------------------------------------------
+
+CREATE TABLE
+    IF NOT EXISTS `Banco`.`conta` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `id_agencia` INT NOT NULL,
+        `tipo_conta` INT NOT NULL,
+        `saldo` FLOAT NULL,
+        `id_usuario` INT NOT NULL,
+        PRIMARY KEY (`id`),
+        INDEX `fk_conta_usuario_idx` (`id_usuario` ASC),
+        INDEX `fk_conta_agencia1_idx` (`id_agencia` ASC),
+        CONSTRAINT `fk_conta_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `Banco`.`usuario` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+        CONSTRAINT `fk_conta_agencia1` FOREIGN KEY (`id_agencia`) REFERENCES `Banco`.`agencia` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    ) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+
+-- Table `Banco`.`extrato`
+
+-- -----------------------------------------------------
+
+CREATE TABLE
+    IF NOT EXISTS `Banco`.`extrato` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `id_conta` INT NOT NULL,
         `valor` FLOAT NOT NULL,
         `acao` VARCHAR(8) NOT NULL,
-        `data_cadastro` DATETIME(1) GENERATED ALWAYS AS (NOW()) VIRTUAL,
-        `contas_agencia` INT NOT NULL,
-        `contas_numero` INT NOT NULL,
+        `data_cadastro` DATETIME GENERATED ALWAYS AS (NOW()) VIRTUAL,
         PRIMARY KEY (`id`),
-        INDEX `fk_extratos_contas1_idx` (
-            `contas_agencia` ASC,
-            `contas_numero` ASC
-        ),
-        CONSTRAINT `fk_extratos_contas1` FOREIGN KEY (
-            `contas_agencia`,
-            `contas_numero`
-        ) REFERENCES `primebank`.`contas` (`agencia`, `numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
-    )
+        INDEX `fk_extrato_conta1_idx` (`id_conta` ASC),
+        CONSTRAINT `fk_extrato_conta1` FOREIGN KEY (`id_conta`) REFERENCES `Banco`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    ) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+
+-- Table `Banco`.`emprestimo`
+
+-- -----------------------------------------------------
+
+CREATE TABLE
+    IF NOT EXISTS `Banco`.`emprestimo` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `id_conta` INT NOT NULL,
+        `valor` FLOAT NULL,
+        `taxa` FLOAT NULL,
+        `parcelas` INT NULL,
+        `parcelas_pagas` INT NULL,
+        PRIMARY KEY (`id`),
+        INDEX `fk_emprestimo_conta1_idx` (`id_conta` ASC),
+        CONSTRAINT `fk_emprestimo_conta1` FOREIGN KEY (`id_conta`) REFERENCES `Banco`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    ) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+
+-- Table `Banco`.`investimento`
+
+-- -----------------------------------------------------
+
+CREATE TABLE
+    IF NOT EXISTS `Banco`.`investimento` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `id_conta` INT NOT NULL,
+        `tipo_investimento` VARCHAR(45) NULL,
+        `taxa` FLOAT NULL,
+        `valor` FLOAT NULL,
+        PRIMARY KEY (`id`),
+        INDEX `fk_investimento_conta1_idx` (`id_conta` ASC),
+        CONSTRAINT `fk_investimento_conta1` FOREIGN KEY (`id_conta`) REFERENCES `Banco`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    ) ENGINE = InnoDB;

@@ -41,18 +41,56 @@ class ExtratoDAO extends BaseDAO
         return $this->delete($extrato->getId());
     }
 
-    public function getAll(): array
+    private function setExtrato(array $data): Extrato
     {
-        return $this->getAll();
+        $extrato = new Extrato();
+        $extrato->setId($data['id']);
+        $extrato->setIdConta($data['id_conta']);
+        $extrato->setValor($data['valor']);
+        $extrato->setAcao($data['acao']);
+        $extrato->setDataCadastro($data['data_cadastro']);
+
+        return $extrato;
     }
 
-    public function getById(int $id): ?array
+    public function listar(): array
     {
-        return $this->getById($id);
+        $results = parent::getAll();
+
+        $extratos = [];
+
+        foreach ($results as $result) {
+            $extrato = $this->setExtrato($result);
+            $extratos[] = $extrato;
+        }
+
+        return $extratos;
     }
 
-    public function getWhere(array $conditions): array
+    public function buscaId(int $id): ?Extrato
     {
-        return $this->getWhere($conditions);
+        $result = parent::getById($id);
+
+        if ($result) {
+            $extrato = $this->setExtrato($result);
+            return $extrato;
+        }
+
+        return null;
     }
+
+    public function buscar(array $conditions): array
+    {
+        $results = parent::getWhere($conditions);
+
+        $extratos = [];
+
+        foreach ($results as $result) {
+            $extrato = $this->setExtrato($result);
+            $extratos[] = $extrato;
+        }
+
+        return $extratos;
+    }
+
 }

@@ -10,7 +10,13 @@ class UsersController extends Controller
 {
     public function index()
     {
+        $usuarioDAO = new UsuarioDAO();
+
+        self::setViewParam('listaUsuarios', $usuarioDAO->listar());
+
         $this->render('users/index');
+
+        Sessao::clearMessage();
     }
 
 

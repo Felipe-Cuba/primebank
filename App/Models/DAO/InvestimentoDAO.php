@@ -41,9 +41,9 @@ class InvestimentoDAO extends BaseDAO
         return $this->delete($investimento->getId());
     }
 
-    public function listar(): array
+    public function getAll(): array
     {
-        $investimentos = $this->getAll();
+        $investimentos = parent::getAll();
 
         $investimentoObjects = [];
         foreach ($investimentos as $investimento) {
@@ -55,7 +55,7 @@ class InvestimentoDAO extends BaseDAO
 
     public function buscaId(int $id): ?Investimento
     {
-        $investimento = $this->getById($id);
+        $investimento = parent::getById($id);
 
         if ($investimento) {
             return $this->setInvestimento($investimento);
@@ -66,7 +66,7 @@ class InvestimentoDAO extends BaseDAO
 
     public function buscar(array $conditions): array
     {
-        $investimentos = $this->getWhere($conditions);
+        $investimentos = parent::getWhere($conditions);
 
         $investimentoObjects = [];
         foreach ($investimentos as $investimento) {

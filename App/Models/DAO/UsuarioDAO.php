@@ -45,19 +45,39 @@ class UsuarioDAO extends BaseDAO
         return $this->delete($usuario->getId());
     }
 
-    public function getAll(): array
+    public function listar(): array
     {
-        return $this->getAll();
+        $usuarios = parent::getAll();
+
+        $usuarioObjects = [];
+        foreach ($usuarios as $usuario) {
+            $usuarioObjects[] = $this->setUsuario($usuario);
+        }
+
+        return $usuarioObjects;
     }
 
-    public function getById(int $id): ?array
+    public function buscaId(int $id): ?Usuario
     {
-        return $this->getById($id);
+        $usuario = parent::getById($id);
+
+        if ($usuario) {
+            return $this->setUsuario($usuario);
+        }
+
+        return null;
     }
 
-    public function getWhere(array $conditions): array
+    public function buscar(array $conditions): array
     {
-        return $this->getWhere($conditions);
+        $usuarios = parent::getWhere($conditions);
+
+        $usuarioObjects = [];
+        foreach ($usuarios as $usuario) {
+            $usuarioObjects[] = $this->setUsuario($usuario);
+        }
+
+        return $usuarioObjects;
     }
 
     public function emailExists(string $email): bool
@@ -69,4 +89,20 @@ class UsuarioDAO extends BaseDAO
 
         return $stmt->fetchColumn() > 0;
     }
+
+    private function setUsuario(array $usuarioData): Usuario
+    {
+        $usuario = new Usuario();
+        $usuario->setId($usuarioData['id']);
+        $usuario->setNome($usuarioData['nome']);
+        $usuario->setEmail($usuarioData['email']);
+        $usuario->setSenha($usuarioData['senha']);
+        $usuario->setDocumento($usuarioData['documento']);
+        $usuario->setDataCadastro($usuarioData['data_cadastro']);
+        $usuario->setDataNasc($usuarioData['data_nasc']);
+        $usuario->setTipo($usuarioData['tipo']);
+
+        return $usuario;
+    }
+
 }

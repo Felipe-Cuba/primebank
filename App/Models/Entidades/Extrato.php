@@ -27,9 +27,19 @@ class Extrato
         return $this->valor;
     }
 
+    public function setValor(float $valor): void
+    {
+        $this->valor = $valor;
+    }
+
     public function getAcao(): string
     {
         return $this->acao;
+    }
+
+    public function setAcao(string $acao): void
+    {
+        $this->acao = $acao;
     }
 
     public function getDataCadastro(): DateTime
@@ -37,9 +47,19 @@ class Extrato
         return new DateTime($this->data_cadastro);
     }
 
+    public function setDataCadastro(string $data_cadastro): void
+    {
+        $this->data_cadastro = $data_cadastro;
+    }
+
     public function getIdConta(): int
     {
         return $this->id_conta;
+    }
+
+    public function setIdConta(int $id_conta): void
+    {
+        $this->id_conta = $id_conta;
     }
 
 }

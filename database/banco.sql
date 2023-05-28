@@ -13,7 +13,7 @@ USE `primebank`;
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `Banco`.`usuario` (
+    IF NOT EXISTS `primebank`.`usuario` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(100) NOT NULL,
         `email` VARCHAR(50) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `Banco`.`banco` (
+    IF NOT EXISTS `primebank`.`banco` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `numero` INT NULL,
         `nome` VARCHAR(45) NULL,
@@ -46,13 +46,13 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `Banco`.`agencia` (
+    IF NOT EXISTS `primebank`.`agencia` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_banco` INT NOT NULL,
         `nome` VARCHAR(45) NULL,
         PRIMARY KEY (`id`),
         INDEX `fk_agencia_banco1_idx` (`id_banco` ASC),
-        CONSTRAINT `fk_agencia_banco1` FOREIGN KEY (`id_banco`) REFERENCES `Banco`.`banco` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        CONSTRAINT `fk_agencia_banco1` FOREIGN KEY (`id_banco`) REFERENCES `primebank`.`banco` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -62,7 +62,7 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `Banco`.`conta` (
+    IF NOT EXISTS `primebank`.`conta` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_agencia` INT NOT NULL,
         `tipo_conta` INT NOT NULL,
@@ -71,8 +71,8 @@ CREATE TABLE
         PRIMARY KEY (`id`),
         INDEX `fk_conta_usuario_idx` (`id_usuario` ASC),
         INDEX `fk_conta_agencia1_idx` (`id_agencia` ASC),
-        CONSTRAINT `fk_conta_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `Banco`.`usuario` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-        CONSTRAINT `fk_conta_agencia1` FOREIGN KEY (`id_agencia`) REFERENCES `Banco`.`agencia` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        CONSTRAINT `fk_conta_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `primebank`.`usuario` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+        CONSTRAINT `fk_conta_agencia1` FOREIGN KEY (`id_agencia`) REFERENCES `primebank`.`agencia` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -82,7 +82,7 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `Banco`.`extrato` (
+    IF NOT EXISTS `primebank`.`extrato` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_conta` INT NOT NULL,
         `valor` FLOAT NOT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE
         `data_cadastro` DATETIME GENERATED ALWAYS AS (NOW()) VIRTUAL,
         PRIMARY KEY (`id`),
         INDEX `fk_extrato_conta1_idx` (`id_conta` ASC),
-        CONSTRAINT `fk_extrato_conta1` FOREIGN KEY (`id_conta`) REFERENCES `Banco`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        CONSTRAINT `fk_extrato_conta1` FOREIGN KEY (`id_conta`) REFERENCES `primebank`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -100,7 +100,7 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `Banco`.`emprestimo` (
+    IF NOT EXISTS `primebank`.`emprestimo` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_conta` INT NOT NULL,
         `valor` FLOAT NULL,
@@ -109,7 +109,7 @@ CREATE TABLE
         `parcelas_pagas` INT NULL,
         PRIMARY KEY (`id`),
         INDEX `fk_emprestimo_conta1_idx` (`id_conta` ASC),
-        CONSTRAINT `fk_emprestimo_conta1` FOREIGN KEY (`id_conta`) REFERENCES `Banco`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        CONSTRAINT `fk_emprestimo_conta1` FOREIGN KEY (`id_conta`) REFERENCES `primebank`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -119,7 +119,7 @@ CREATE TABLE
 -- -----------------------------------------------------
 
 CREATE TABLE
-    IF NOT EXISTS `Banco`.`investimento` (
+    IF NOT EXISTS `primebank`.`investimento` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_conta` INT NOT NULL,
         `tipo_investimento` VARCHAR(45) NULL,
@@ -127,5 +127,5 @@ CREATE TABLE
         `valor` FLOAT NULL,
         PRIMARY KEY (`id`),
         INDEX `fk_investimento_conta1_idx` (`id_conta` ASC),
-        CONSTRAINT `fk_investimento_conta1` FOREIGN KEY (`id_conta`) REFERENCES `Banco`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        CONSTRAINT `fk_investimento_conta1` FOREIGN KEY (`id_conta`) REFERENCES `primebank`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB;

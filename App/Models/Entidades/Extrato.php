@@ -17,6 +17,11 @@ class Extrato
         return $this->id;
     }
 
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getValor(): float
     {
         return $this->valor;

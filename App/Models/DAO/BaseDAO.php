@@ -17,12 +17,12 @@ abstract class BaseDAO
         $this->tableName = $tableName;
     }
 
-    public function getTableName(): string
+    protected function getTableName(): string
     {
         return $this->tableName;
     }
 
-    public function create(array $data): bool
+    protected function create(array $data): bool
     {
         $columns = implode(', ', array_keys($data));
         $values = ':' . implode(', :', array_keys($data));
@@ -38,12 +38,12 @@ abstract class BaseDAO
         return $stmt->execute();
     }
 
-    public function update(int $id, array $data): bool
+    protected function update(int $id, array $data): bool
     {
         $setStatements = [];
 
         foreach ($data as $key => $value) {
-            $setStatements[] = "SET {$key} = :{$key}";
+            $setStatements[] = "{$key} = :{$key}";
         }
 
         $setStatements = implode(', ', $setStatements);
@@ -61,7 +61,8 @@ abstract class BaseDAO
         return $stmt->execute();
     }
 
-    public function delete(int $id): bool
+
+    protected function delete(int $id): bool
     {
         $query = "DELETE FROM {$this->tableName} WHERE id = :id";
 
@@ -72,7 +73,7 @@ abstract class BaseDAO
         return $stmt->execute();
     }
 
-    public function getAll(): array
+    protected function getAll(): array
     {
         $query = "SELECT * FROM {$this->tableName}";
 
@@ -81,7 +82,7 @@ abstract class BaseDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getById(int $id): ?array
+    protected function getById(int $id): ?array
     {
         $query = "SELECT * FROM {$this->tableName} WHERE id = :id";
 
@@ -94,7 +95,7 @@ abstract class BaseDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: null;
     }
 
-    public function getWhere(array $conditions): array
+    protected function getWhere(array $conditions): array
     {
         $whereStatements = [];
 
@@ -117,7 +118,7 @@ abstract class BaseDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function executeQuery(string $query, array $params = []): array
+    protected function executeQuery(string $query, array $params = []): array
     {
         $stmt = $this->conexao->prepare($query);
 

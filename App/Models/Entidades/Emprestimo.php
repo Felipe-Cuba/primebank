@@ -26,6 +26,11 @@ class Emprestimo
         return $this->id_conta;
     }
 
+    public function setIdConta($idConta): void
+    {
+        $this->id_conta = $idConta;
+    }
+
     public function getValor(): float
     {
         return $this->valor;

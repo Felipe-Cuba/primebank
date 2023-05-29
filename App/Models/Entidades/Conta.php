@@ -25,6 +25,11 @@ class Conta
         return $this->id_agencia;
     }
 
+    public function setIdAgencia(int $idAgencia): void
+    {
+        $this->id_agencia = $idAgencia;
+    }
+
     public function getTipoConta(): int
     {
         return $this->tipo_conta;
@@ -48,6 +53,11 @@ class Conta
     public function getUsuario(): int
     {
         return $this->id_usuario;
+    }
+
+    public function setUsuario($id_usuario): void
+    {
+        $this->id_usuario = $id_usuario;
     }
 
 }

@@ -8,7 +8,7 @@
                 </div>
             <?php } ?>
 
-            <form class="form-group" action="http://<?php echo APP_HOST; ?>/users/salvar" method="post">
+            <form class="form-group" action="http://<?php echo APP_HOST; ?>/usuarios/salvar" method="post">
                 <div class="mt-2">
                     <label class="form-lable" for="nome">Nome:</label>
                     <input type="text" class="form-control" id="nome" name="nome" required>

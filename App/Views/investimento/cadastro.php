@@ -10,17 +10,17 @@
 
             <form class="form-group" action="http://<?php echo APP_HOST; ?>/investimento/salvar" method="post">
                 <div class="mt-2">
-                    <label class="form-lable" for="tipo">tipo de investimento:</label>
+                    <label class="form-lable" for="tipo">Tipo de investimento:</label>
                     <input type="text" class="form-control" id="tipo" name="tipo" required>
                 </div>
 
                 <div class="mt-2">
-                    <label class="form-lable" for="taxa">taxa:</label>
+                    <label class="form-lable" for="taxa">Taxa:</label>
                     <input type="number" class="form-control" id="taxa" name="taxa" required>
                 </div>
 
                 <div class="mt-2">
-                    <label class="form-lable" for="valor">valor do financiamento:</label>
+                    <label class="form-lable" for="valor">Valor do financiamento:</label>
                     <input type="number" class="form-control" id="valor" name="valor" required> 
                 </div>
 

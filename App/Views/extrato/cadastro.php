@@ -7,25 +7,24 @@
                     <?php echo $Sessao::returnMessage(); ?>
                 </div>
             <?php } ?>
-
-            <form class="form-group" action="http://<?php echo APP_HOST; ?>/emprestimo/salvar" method="post">
+            <form class="form-group" action="http://<?php echo APP_HOST; ?>/extrato/salvar" method="post">
                 <div class="mt-2">
-                    <label class="form-lable" for="acao">acao:</label>
-                    <input type="text" class="form-control" id="acao" name="acao" required> 
+                    <label class="form-lable" for="acao">Ação:</label>
+                    <select class="form-control" id="acao" name="acao" required>
+                        <option value="">Selecione uma ação</option>
+                        <option value="deposito">Depósito</option>
+                        <option value="saque">Saque</option>
+                        <option value="pagamento">Pagamento</option>
+                    </select>
                 </div>
 
                 <div class="mt-2">
-                    <label class="form-lable" for="valor">valor:</label>
+                    <label class="form-lable" for="valor">Valor:</label>
                     <input type="number" class="form-control" id="valor" name="valor" required>
                 </div>
 
-                <div class="mt-2">
-                    <label class="form-lable" for="data">data do cadastro:</label>
-                    <input type="date-time" class="form-control" id="data" name="data" required> 
-                </div>
-
                 <button type="submit" class="btn btn-primary mt-2">Enviar</button>
-                
+
             </form>
         </div>
     </div>

@@ -27,7 +27,7 @@ class ContaDAO extends BaseDAO
     public function atualizar(Conta $conta): bool
     {
         $data = [
-            'id_agencia' => $conta->getIdAgencia(),
+            'id_agencia' => $conta->getId(),
             'tipo_conta' => $conta->getTipoConta(),
             'saldo' => $conta->getSaldo(),
             'id_usuario' => $conta->getUsuario()
@@ -41,18 +41,50 @@ class ContaDAO extends BaseDAO
         return $this->delete($id);
     }
 
-    public function getAll(): array
+    public function listar(): array
     {
-        return $this->getAll();
+        $contas = parent::getAll();
+
+        $contaObjects = [];
+        foreach ($contas as $conta) {
+            $contaObjects[] = $this->setConta($conta);
+        }
+
+        return $contaObjects;
     }
 
-    public function getById(int $id): ?array
+    public function buscaId(int $id): ?Conta
     {
-        return $this->getById($id);
+        $conta = parent::getById($id);
+
+        if ($conta) {
+            return $this->setConta($conta);
+        }
+
+        return null;
     }
 
-    public function getWhere(array $conditions): array
+    public function buscar(array $conditions): array
     {
-        return $this->getWhere($conditions);
+        $contas = parent::getWhere($conditions);
+
+        $contaObjects = [];
+        foreach ($contas as $conta) {
+            $contaObjects[] = $this->setConta($conta);
+        }
+
+        return $contaObjects;
+    }
+
+    private function setConta(array $contaData): Conta
+    {
+        $conta = new Conta();
+        $conta->setId($contaData['id']);
+        $conta->setIdAgencia($contaData['id_agencia']);
+        $conta->setTipoConta($contaData['tipo_conta']);
+        $conta->setSaldo($contaData['saldo']);
+        $conta->setUsuario($contaData['id_usuario']);
+
+        return $conta;
     }
 }

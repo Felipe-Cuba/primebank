@@ -17,8 +17,7 @@ class ExtratoDAO extends BaseDAO
         $data = [
             'id_conta' => $extrato->getIdConta(),
             'valor' => $extrato->getValor(),
-            'acao' => $extrato->getAcao(),
-            'data_cadastro' => $extrato->getDataCadastro()->format('Y-m-d H:i:s')
+            'acao' => $extrato->getAcao()
         ];
 
         return $this->create($data);

@@ -19,7 +19,7 @@ class UsuarioDAO extends BaseDAO
             'email' => $usuario->getEmail(),
             'senha' => $usuario->getSenha(),
             'documento' => $usuario->getDocumento(),
-            'data_nasc' => $usuario->getDataNasc(),
+            'data_nasc' => $usuario->getDataNasc()->format('Y-m-d'),
             'tipo' => $usuario->getTipo()
         ];
 
@@ -33,7 +33,7 @@ class UsuarioDAO extends BaseDAO
             'email' => $usuario->getEmail(),
             'senha' => $usuario->getSenha(),
             'documento' => $usuario->getDocumento(),
-            'data_nasc' => $usuario->getDataNasc(),
+            'data_nasc' => $usuario->getDataNasc()->format('Y-m-d'),
             'tipo' => $usuario->getTipo()
         ];
 
@@ -50,8 +50,8 @@ class UsuarioDAO extends BaseDAO
         $usuarios = parent::getAll();
 
         $usuarioObjects = [];
-        foreach ($usuarios as $usuario) {
-            $usuarioObjects[] = $this->setUsuario($usuario);
+        foreach ($usuarios as $usuarioData) {
+            $usuarioObjects[] = $this->setUsuario($usuarioData);
         }
 
         return $usuarioObjects;
@@ -59,10 +59,10 @@ class UsuarioDAO extends BaseDAO
 
     public function buscaId(int $id): ?Usuario
     {
-        $usuario = parent::getById($id);
+        $usuarioData = parent::getById($id);
 
-        if ($usuario) {
-            return $this->setUsuario($usuario);
+        if ($usuarioData) {
+            return $this->setUsuario($usuarioData[0]);
         }
 
         return null;
@@ -73,8 +73,8 @@ class UsuarioDAO extends BaseDAO
         $usuarios = parent::getWhere($conditions);
 
         $usuarioObjects = [];
-        foreach ($usuarios as $usuario) {
-            $usuarioObjects[] = $this->setUsuario($usuario);
+        foreach ($usuarios as $usuarioData) {
+            $usuarioObjects[] = $this->setUsuario($usuarioData);
         }
 
         return $usuarioObjects;
@@ -92,6 +92,7 @@ class UsuarioDAO extends BaseDAO
 
     private function setUsuario(array $usuarioData): Usuario
     {
+        // print_r($usuarioData);
         $usuario = new Usuario();
         $usuario->setId($usuarioData['id']);
         $usuario->setNome($usuarioData['nome']);

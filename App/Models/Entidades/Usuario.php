@@ -65,9 +65,9 @@ class Usuario
         $this->documento = $documento;
     }
 
-    public function getDataNasc(): string
+    public function getDataNasc(): DateTime
     {
-        return $this->data_nasc;
+        return new DateTime($this->data_nasc);
     }
 
     public function setDataNasc(string $data_nasc)
@@ -93,5 +93,21 @@ class Usuario
     public function setTipo(int $tipo)
     {
         $this->tipo = $tipo;
+    }
+
+    public function getDocumentoFormatado(): string
+    {
+        $valor = $this->documento;
+        $valor = preg_replace('/[^0-9]/', '', $valor); // Remove caracteres não numéricos
+
+        if (strlen($valor) === 11) {
+            // Formata CPF (exemplo: 123.456.789-10)
+            $valor = substr($valor, 0, 3) . '.' . substr($valor, 3, 3) . '.' . substr($valor, 6, 3) . '-' . substr($valor, 9, 2);
+        } elseif (strlen($valor) === 14) {
+            // Formata CNPJ (exemplo: 12.345.678/0001-90)
+            $valor = substr($valor, 0, 2) . '.' . substr($valor, 2, 3) . '.' . substr($valor, 5, 3) . '/' . substr($valor, 8, 4) . '-' . substr($valor, 12, 2);
+        }
+
+        return $valor;
     }
 }

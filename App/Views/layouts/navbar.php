@@ -12,13 +12,16 @@
             <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>"><i class="fas fa-home"></i> Início</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/usuario/show.php"><i class="fas fa-user"></i> Perfil</a>
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/usuarios"><i class="fas fa-user"></i>
+              Usuários</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/contas/show.php"><i class="fas fa-wallet"></i> Contas</a>
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/contas"><i class="fas fa-wallet"></i>
+              Contas</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/extrato/historico.php"><i class="fas fa-history"></i> Extrato</a>
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/extrato"><i class="fas fa-history"></i>
+              Extrato</a>
           </li>
         </ul>
       </div>

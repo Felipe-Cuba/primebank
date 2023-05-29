@@ -10,23 +10,23 @@
 
             <form class="form-group" action="http://<?php echo APP_HOST; ?>/emprestimo/salvar" method="post">
                 <div class="mt-2">
-                    <label class="form-lable" for="valor">valor do financiamento:</label>
+                    <label class="form-lable" for="valor">Valor do financiamento:</label>
                     <input type="number" class="form-control" id="valor" name="valor" required> 
                 </div>
 
                 <div class="mt-2">
-                    <label class="form-lable" for="taxa">taxa:</label>
+                    <label class="form-lable" for="taxa">Taxa:</label>
                     <input type="number" class="form-control" id="taxa" name="taxa" required>
                 </div>
 
                 <div class="mt-2">
-                    <label class="form-lable" for="parcelas">parcelas:</label>
+                    <label class="form-lable" for="parcelas">Parcelas:</label>
                     <input type="number" class="form-control" id="parcelas" name="parcelas" required> 
                 </div>
 
                 <div class="mt-2">
-                    <label class="form-lable" for="parcelaspagas">parcelas pagas:</label>
-                    <input type="number" class="form-control" id="parcelaspagas" name="parcelaspagas" required> 
+                    <label class="form-lable" for="parcelasPagas">Parcelas pagas:</label>
+                    <input type="number" class="form-control" id="parcelasPagas" name="parcelasPagas" required> 
                 </div>
 
 

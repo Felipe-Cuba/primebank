@@ -16,6 +16,7 @@ class ContaDAO extends BaseDAO
     {
         $data = [
             'id_agencia' => $conta->getIdAgencia(),
+            'numero' => $conta->getNumero(),
             'tipo_conta' => $conta->getTipoConta(),
             'saldo' => $conta->getSaldo(),
             'id_usuario' => $conta->getUsuario()
@@ -36,9 +37,31 @@ class ContaDAO extends BaseDAO
         return $this->update($conta->getId(), $data);
     }
 
-    public function excluir(int $id): bool
+    public function excluir(Conta $conta): bool
     {
-        return $this->delete($id);
+        // Excluir investimentos relacionados à conta
+        $investimentoDAO = new InvestimentoDAO();
+        $investimentos = $investimentoDAO->buscar(['id_conta' => $conta->getId()]);
+        foreach ($investimentos as $investimento) {
+            $investimentoDAO->excluir($investimento);
+        }
+
+        // Excluir empréstimos relacionados à conta
+        $emprestimoDAO = new EmprestimoDAO();
+        $emprestimos = $emprestimoDAO->buscar(['id_conta' => $conta->getId()]);
+        foreach ($emprestimos as $emprestimo) {
+            $emprestimoDAO->excluir($emprestimo);
+        }
+
+        // Excluir extratos relacionados à conta
+        $extratoDAO = new ExtratoDAO();
+        $extratos = $extratoDAO->buscar(['id_conta' => $conta->getId()]);
+        foreach ($extratos as $extrato) {
+            $extratoDAO->excluir($extrato);
+        }
+
+        // Excluir a conta
+        return $this->delete($conta->getId());
     }
 
     public function listar(): array
@@ -58,7 +81,7 @@ class ContaDAO extends BaseDAO
         $conta = parent::getById($id);
 
         if ($conta) {
-            return $this->setConta($conta);
+            return $this->setConta($conta[0]);
         }
 
         return null;
@@ -82,6 +105,7 @@ class ContaDAO extends BaseDAO
         $conta->setId($contaData['id']);
         $conta->setIdAgencia($contaData['id_agencia']);
         $conta->setTipoConta($contaData['tipo_conta']);
+        $conta->setNumero($contaData['numero']);
         $conta->setSaldo($contaData['saldo']);
         $conta->setUsuario($contaData['id_usuario']);
 

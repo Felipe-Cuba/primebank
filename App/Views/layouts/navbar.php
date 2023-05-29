@@ -16,8 +16,24 @@
               Usuários</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/contas"><i class="fas fa-wallet"></i>
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/banco"><i class="fas fa-building-columns"></i>
+              Bancos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/agencia"><i class="fas fa-briefcase"></i>
+              Agencias</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/conta"><i class="fas fa-wallet"></i>
               Contas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/investimento"><i class="fas fa-coins"></i>
+              Investimentos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/emprestimo"><i class="fas fa-sack-dollar"></i>
+              Emprestimos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-white" href="http://<?php echo APP_HOST; ?>/extrato"><i class="fas fa-history"></i>

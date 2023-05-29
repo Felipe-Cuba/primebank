@@ -42,6 +42,12 @@ class UsuarioDAO extends BaseDAO
 
     public function excluir(Usuario $usuario): bool
     {
+        $contaDAO = new ContaDAO();
+        $contas = $contaDAO->buscar(['id_usuario' => $usuario->getId()]);
+        foreach ($contas as $conta) {
+            $contaDAO->excluir($conta);
+        }
+
         return $this->delete($usuario->getId());
     }
 

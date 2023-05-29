@@ -58,7 +58,7 @@ class InvestimentoDAO extends BaseDAO
         $investimento = parent::getById($id);
 
         if ($investimento) {
-            return $this->setInvestimento($investimento);
+            return $this->setInvestimento($investimento[0]);
         }
 
         return null;

@@ -7,9 +7,22 @@ use App\Models\DAO\UsuarioDAO;
 use App\Lib\Sessao;
 use App\Models\DAO\ExtratoDAO;
 use App\Models\Entidades\Extrato;
+use App\Models\Validacao\ExtratoValidador;
 
 class ExtratoController extends Controller
 {
+    public function index()
+    {
+        $extratoDAO = new ExtratoDAO();
+        $contaDAO = new ContaDAO();
+
+        self::setViewParam('listaExtratos', $extratoDAO->listar());
+        self::setViewParam('listaContas', $contaDAO->listar());
+
+        $this->render('/extrato/index');
+
+        Sessao::clearMessage();
+    }
     public function cadastro()
     {
         $this->render('extrato/cadastro');
@@ -80,5 +93,96 @@ class ExtratoController extends Controller
         } else {
             Sessao::recordMessage('Ocorreu um erro!');
         }
+    }
+
+    public function edicao($params)
+    {
+        $id = $params[0];
+
+        $extratoDAO = new ExtratoDAO();
+
+        $extrato = $extratoDAO->buscaId($id);
+
+        if (!$extrato) {
+            Sessao::recordMessage("Extrato inexistente");
+            $this->redirect('/extrato');
+        }
+
+        self::setViewParam('extrato', $extrato);
+
+        $this->render('/extrato/editar');
+
+        Sessao::clearMessage();
+    }
+
+    public function atualizar()
+    {
+        $f = $_POST;
+        print_r($f);
+        $extrato = new Extrato();
+        $extrato->setId($f['id']);
+        $extrato->setIdConta($f['id_conta']);
+        $extrato->setValor($f['valor']);
+        $extrato->setAcao($f['acao']);
+
+
+        Sessao::recordForm($f);
+
+        $extratoValidador = new ExtratoValidador();
+        $resultadoValidacao = $extratoValidador->validar($extrato);
+
+        if ($resultadoValidacao->getErros()) {
+            Sessao::recordError($resultadoValidacao->getErros());
+            $this->redirect('/extrato/edicao/' . $f['id']);
+        }
+
+        $investimentoDAO = new ExtratoDAO();
+
+        $investimentoDAO->atualizar($extrato);
+
+        Sessao::clearForm();
+        Sessao::clearMessage();
+        Sessao::clearError();
+
+        $this->redirect('/extrato');
+    }
+    public function exclusao($params)
+    {
+        $id = $params[0];
+
+        $extratoDAO = new ExtratoDAO();
+
+        $extrato = $extratoDAO->buscaId($id);
+
+        $contaDAO = new ContaDAO();
+        self::setViewParam('listaContas', $contaDAO->listar());
+
+        if (!$extrato) {
+            Sessao::recordMessage("Extrato inexistente!");
+            $this->redirect('/extrato');
+        }
+
+        self::setViewParam('extrato', $extrato);
+
+        $this->render('/extrato/exclusao');
+
+        Sessao::clearMessage();
+    }
+
+    public function excluir()
+    {
+        $f = $_POST;
+        $extrato = new Extrato();
+        $extrato->setId($f['id']);
+
+        $extratoDAO = new ExtratoDAO();
+
+        if (!$extratoDAO->excluir($extrato)) {
+            Sessao::recordMessage('Extrato Inexistente!');
+            $this->redirect('/extrato');
+        }
+
+        Sessao::recordMessage('Extrato excluido com sucesso!');
+        $this->redirect('/extrato');
     }
 }

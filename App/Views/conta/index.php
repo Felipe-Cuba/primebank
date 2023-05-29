@@ -1,7 +1,7 @@
 <div class="container my-3">
   <div class="row">
     <div class="col-md-12">
-      <a href="http://<?= APP_HOST ?>/investimento/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
+      <a href="http://<?= APP_HOST ?>/conta/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
     </div>
 
     <div class="col-md-12 mt-3">
@@ -12,9 +12,9 @@
       <?php } ?>
 
       <?php
-      if (!count($viewVar['listaInvestimentos'])) {
+      if (!count($viewVar['listaContas'])) {
         ?>
-        <div class="alert alert-info" role="alert">Nenhum investimento encontrado</div>
+        <div class="alert alert-info" role="alert">Nenhuma conta encontrado</div>
         <?php
       } else {
         ?>
@@ -24,43 +24,54 @@
             <thead class="table-dark text-center table-bordered table-hover">
               <tr>
                 <th>ID</th>
+                <th>Agencia</th>
                 <th>Número da conta</th>
-                <th>Tipo de investimento</th>
-                <th>Taxa</th>
-                <th>Valor</th>
+                <th>Tipo de conta</th>
+                <th>Saldo</th>
+                <th>Usuário</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody>
               <?php
               $contas = $viewVar['listaContas'];
-              foreach ($viewVar['listaInvestimentos'] as $investimento) {
-                $conta = array_values(array_filter($contas, function ($conta) use ($investimento) {
-                  return $conta->getId() === $investimento->getIdConta();
+              $usuarios = $viewVar['listaUsuarios'];
+              $agencias = $viewVar['listaAgencias'];
+              foreach ($contas as $conta) {
+                $usuario = array_values(array_filter($usuarios, function ($usuario) use ($conta) {
+                  return $usuario->getId() === $conta->getUsuario();
+                }));
+
+                $agencia = array_values(array_filter($agencias, function ($agencia) use ($conta) {
+                  return $agencia->getId() === $conta->getIdAgencia();
                 }));
                 ?>
 
                 <tr>
                   <td>
-                    <?= $investimento->getId() ?>
+                    <?= $conta->getId() ?>
                   </td>
                   <td>
-                    <?= $conta[0]->getNumero() ?>
+                    <?= $agencia[0]->getNome() ?>
                   </td>
                   <td>
-                    <?= $investimento->getTipoInvestimento() ?>
+                    <?= $conta->getNumero() ?>
                   </td>
                   <td>
-                    <?= $investimento->getTaxa() . '%' ?>
-                  </td>
-                  <td>
-                    <?= $investimento->getValorFormatado() ?>
+                    <?= $conta->getTipoconta() ?>
                   </td>
 
                   <td>
-                    <a href="http://<?= APP_HOST ?>/investimento/edicao/<?= $investimento->getId() ?>"
+                    <?= $conta->getSaldoFormatado() ?>
+                  </td>
+                  <td>
+                    <?= $usuario[0]->getNome() ?>
+                  </td>
+
+                  <td>
+                    <a href="http://<?= APP_HOST ?>/conta/edicao/<?= $conta->getId() ?>"
                       class="btn btn-primary btn-sm">Editar</a>
-                    <a href="http://<?= APP_HOST ?>/investimento/exclusao/<?= $investimento->getId() ?>"
+                    <a href="http://<?= APP_HOST ?>/conta/exclusao/<?= $conta->getId() ?>"
                       class="btn btn-danger btn-sm">Excluir</a>
                   </td>
                 </tr>

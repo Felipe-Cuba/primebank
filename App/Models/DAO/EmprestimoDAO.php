@@ -43,19 +43,52 @@ class EmprestimoDAO extends BaseDAO
         return $this->delete($emprestimo->getId());
     }
 
-    public function getAll(): array
+    public function listar(): array
     {
-        return $this->getAll();
+        $emprestimos = parent::getAll();
+
+        $emprestimoObjects = [];
+        foreach ($emprestimos as $emprestimo) {
+            $emprestimoObjects[] = $this->setEmprestimo($emprestimo);
+        }
+
+        return $emprestimoObjects;
     }
 
-    public function getById(int $id): ?array
+    public function buscaId(int $id): ?Emprestimo
     {
-        return $this->getById($id);
+        $emprestimo = parent::getById($id);
+
+        if ($emprestimo) {
+            return $this->setEmprestimo($emprestimo[0]);
+        }
+
+        return null;
     }
 
-    public function getWhere(array $conditions): array
+    public function buscar(array $conditions): array
     {
-        return $this->getWhere($conditions);
+        $emprestimos = parent::getWhere($conditions);
+
+        $emprestimoObjects = [];
+        foreach ($emprestimos as $emprestimo) {
+            $emprestimoObjects[] = $this->setEmprestimo($emprestimo);
+        }
+
+        return $emprestimoObjects;
+    }
+
+    private function setEmprestimo(array $emprestimoData): Emprestimo
+    {
+        $emprestimo = new Emprestimo();
+        $emprestimo->setId($emprestimoData['id']);
+        $emprestimo->setIdConta($emprestimoData['id_conta']);
+        $emprestimo->setParcelas($emprestimoData['parcelas']);
+        $emprestimo->setParcelasPagas($emprestimoData['parcelas_pagas']);
+        $emprestimo->setTaxa($emprestimoData['taxa']);
+        $emprestimo->setValor($emprestimoData['valor']);
+
+        return $emprestimo;
     }
 
 }

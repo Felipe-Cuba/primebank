@@ -1,7 +1,7 @@
 <div class="container my-3">
   <div class="card text-start">
     <div class="card-body">
-      <h1 class="card-title">Atualização de Usuário</h1>
+      <h1 class="card-title">Atualizar Usuário</h1>
 
       <?php if ($Sessao::returnError()) { ?>
         <div class="alert alert-warning" role="alert">

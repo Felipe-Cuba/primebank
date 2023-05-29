@@ -50,6 +50,13 @@ class Investimento
         $this->taxa = $taxa;
     }
 
+    public function getValorFormatado(): string
+    {
+        $valor = $this->valor;
+        $valorFormatado = number_format($valor, 2, ',', '.');
+        return 'R$ ' . $valorFormatado; // Adapte para o símbolo de moeda desejado
+    }
+
     public function getValor(): float
     {
         return $this->valor;

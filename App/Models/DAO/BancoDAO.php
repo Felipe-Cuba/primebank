@@ -33,6 +33,12 @@ class BancoDAO extends BaseDAO
 
     public function excluir(Banco $banco): bool
     {
+        $agenciaDAO = new AgenciaDAO();
+        $agencias = $agenciaDAO->buscar(['id_banco' => $banco->getId()]);
+        foreach ($agencias as $agencia) {
+            $agenciaDAO->excluir($agencia);
+        }
+
         return $this->delete($banco->getId());
     }
 
@@ -41,7 +47,7 @@ class BancoDAO extends BaseDAO
         $data = $this->getById($id);
 
         if ($data) {
-            return $this->createBancoObject($data);
+            return $this->createBancoObject($data[0]);
         }
 
         return null;

@@ -32,6 +32,13 @@ class Extrato
         $this->valor = $valor;
     }
 
+    public function getValorFormatado(): string
+    {
+        $valor = $this->valor;
+        $valorFormatado = number_format($valor, 2, ',', '.');
+        return 'R$ ' . $valorFormatado; // Adapte para o símbolo de moeda desejado
+    }
+
     public function getAcao(): string
     {
         return $this->acao;

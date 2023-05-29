@@ -6,6 +6,7 @@ class Conta
 {
     private int $id;
     private int $id_agencia;
+    private int $numero;
     private int $tipo_conta;
     private float $saldo;
     private int $id_usuario;
@@ -18,6 +19,16 @@ class Conta
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getNumero(): int
+    {
+        return $this->numero;
+    }
+
+    public function setNumero(int $numero): void
+    {
+        $this->numero = $numero;
     }
 
     public function getIdAgencia(): int
@@ -48,6 +59,13 @@ class Conta
     public function setSaldo(float $saldo): void
     {
         $this->saldo = $saldo;
+    }
+
+    public function getSaldoFormatado(): string
+    {
+        $valor = $this->saldo;
+        $valorFormatado = number_format($valor, 2, ',', '.');
+        return 'R$ ' . $valorFormatado; // Adapte para o símbolo de moeda desejado
     }
 
     public function getUsuario(): int

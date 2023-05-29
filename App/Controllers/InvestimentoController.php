@@ -7,9 +7,23 @@ use App\Models\DAO\ContaDAO;
 use App\Models\DAO\InvestimentoDAO;
 use App\Models\Entidades\Investimento;
 use App\Models\DAO\UsuarioDAO;
+use App\Models\Validacao\InvestimentoValidador;
 
 class InvestimentoController extends Controller
 {
+
+    public function index()
+    {
+        $investimentoDAO = new InvestimentoDAO();
+        $contaDAO = new ContaDAO();
+
+        self::setViewParam('listaInvestimentos', $investimentoDAO->listar());
+        self::setViewParam('listaContas', $contaDAO->listar());
+
+        $this->render('/investimento/index');
+
+        Sessao::clearMessage();
+    }
     public function cadastro()
     {
         $this->render('investimento/cadastro');
@@ -65,5 +79,97 @@ class InvestimentoController extends Controller
         } else {
             Sessao::recordMessage('Ocorreu um erro!');
         }
+    }
+
+    public function edicao($params)
+    {
+        $id = $params[0];
+
+        $investimentoDAO = new InvestimentoDAO();
+
+        $investimento = $investimentoDAO->buscaId($id);
+
+        if (!$investimento) {
+            Sessao::recordMessage("Investimento inexistente");
+            $this->redirect('/investimento');
+        }
+
+        self::setViewParam('investimento', $investimento);
+
+        $this->render('/investimento/editar');
+
+        Sessao::clearMessage();
+    }
+
+    public function atualizar()
+    {
+        $f = $_POST;
+        print_r($f);
+        $investimento = new Investimento();
+        $investimento->setId($f['id']);
+        $investimento->setIdConta($f['id_conta']);
+        $investimento->setTaxa($f['taxa']);
+        $investimento->setTipoInvestimento($f['tipo']);
+        $investimento->setValor($f['valor']);
+
+        Sessao::recordForm($f);
+
+        $investimentoValidador = new InvestimentoValidador();
+        $resultadoValidacao = $investimentoValidador->validar($investimento);
+
+        if ($resultadoValidacao->getErros()) {
+            Sessao::recordError($resultadoValidacao->getErros());
+            $this->redirect('/investimento/edicao/' . $f['id']);
+        }
+
+        $investimentoDAO = new InvestimentoDAO();
+
+        $investimentoDAO->atualizar($investimento);
+
+        Sessao::clearForm();
+        Sessao::clearMessage();
+        Sessao::clearError();
+
+        $this->redirect('/investimento');
+    }
+
+    public function exclusao($params)
+    {
+        $id = $params[0];
+
+        $investimentoDAO = new InvestimentoDAO();
+
+        $investimento = $investimentoDAO->buscaId($id);
+
+        $contaDAO = new ContaDAO();
+        self::setViewParam('listaContas', $contaDAO->listar());
+
+        if (!$investimento) {
+            Sessao::recordMessage("Investimento inexistente!");
+            $this->redirect('/investimento');
+        }
+
+        self::setViewParam('investimento', $investimento);
+
+        $this->render('/investimento/exclusao');
+
+        Sessao::clearMessage();
+    }
+
+    public function excluir()
+    {
+        $f = $_POST;
+        $investimento = new Investimento();
+        $investimento->setId($f['id']);
+
+        $investimentoDAO = new InvestimentoDAO();
+
+        if (!$investimentoDAO->excluir($investimento)) {
+            Sessao::recordMessage('Investimento Inexistente!');
+            $this->redirect('/investimento');
+        }
+
+        Sessao::recordMessage('Investimento excluido com sucesso!');
+        $this->redirect('/investimento');
     }
 }

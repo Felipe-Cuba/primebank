@@ -22,10 +22,6 @@ class ExtratoValidador
       $resultado->addErro('acao', 'O campo ação é obrigatório.');
     }
 
-    if (empty($extrato->getDataCadastro())) {
-      $resultado->addErro('data_cadastro', 'O campo data de cadastro é obrigatório.');
-    }
-
     return $resultado;
   }
 }

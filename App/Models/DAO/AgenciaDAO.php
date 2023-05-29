@@ -35,6 +35,13 @@ class AgenciaDAO extends BaseDAO
 
     public function excluir(Agencia $agencia): bool
     {
+        // Excluir contas relacionados à agencia
+        $contaDAO = new ContaDAO();
+        $contas = $contaDAO->buscar(['id_agencia' => $agencia->getId()]);
+        foreach ($contas as $conta) {
+            $contaDAO->excluir($conta);
+        }
+
         return parent::delete($agencia->getId());
     }
 
@@ -59,6 +66,18 @@ class AgenciaDAO extends BaseDAO
         }
 
         return $agencias;
+    }
+
+    public function buscar(array $conditions): array
+    {
+        $agencias = parent::getWhere($conditions);
+
+        $agenciaObjects = [];
+        foreach ($agencias as $agencia) {
+            $agenciaObjects[] = $this->setAgencia($agencia);
+        }
+
+        return $agenciaObjects;
     }
 
     private function setAgencia(array $data): Agencia

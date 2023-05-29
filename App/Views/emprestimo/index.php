@@ -1,7 +1,7 @@
 <div class="container my-3">
   <div class="row">
     <div class="col-md-12">
-      <a href="http://<?= APP_HOST ?>/investimento/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
+      <a href="http://<?= APP_HOST ?>/emprestimo/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
     </div>
 
     <div class="col-md-12 mt-3">
@@ -12,7 +12,7 @@
       <?php } ?>
 
       <?php
-      if (!count($viewVar['listaInvestimentos'])) {
+      if (!count($viewVar['listaEmprestimos'])) {
         ?>
         <div class="alert alert-info" role="alert">Nenhum investimento encontrado</div>
         <?php
@@ -25,42 +25,47 @@
               <tr>
                 <th>ID</th>
                 <th>Número da conta</th>
-                <th>Tipo de investimento</th>
                 <th>Taxa</th>
                 <th>Valor</th>
+                <th>Parcelas</th>
+                <th>Parcelas Pagas</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody>
               <?php
               $contas = $viewVar['listaContas'];
-              foreach ($viewVar['listaInvestimentos'] as $investimento) {
-                $conta = array_values(array_filter($contas, function ($conta) use ($investimento) {
-                  return $conta->getId() === $investimento->getIdConta();
+              foreach ($viewVar['listaEmprestimos'] as $emprestimo) {
+                $conta = array_values(array_filter($contas, function ($conta) use ($emprestimo) {
+                  return $conta->getId() === $emprestimo->getIdConta();
                 }));
                 ?>
 
                 <tr>
                   <td>
-                    <?= $investimento->getId() ?>
+                    <?= $emprestimo->getId() ?>
                   </td>
                   <td>
                     <?= $conta[0]->getNumero() ?>
                   </td>
                   <td>
-                    <?= $investimento->getTipoInvestimento() ?>
+                    <?= $emprestimo->getTaxa() . '%' ?>
                   </td>
                   <td>
-                    <?= $investimento->getTaxa() . '%' ?>
+                    <?= $emprestimo->getValorFormatado() ?>
                   </td>
                   <td>
-                    <?= $investimento->getValorFormatado() ?>
+                    <?= $emprestimo->getParcelas() ?>
+                  </td>
+                  <td>
+                    <?= $emprestimo->getParcelasPagas() ?>
                   </td>
 
+
                   <td>
-                    <a href="http://<?= APP_HOST ?>/investimento/edicao/<?= $investimento->getId() ?>"
+                    <a href="http://<?= APP_HOST ?>/emprestimo/edicao/<?= $emprestimo->getId() ?>"
                       class="btn btn-primary btn-sm">Editar</a>
-                    <a href="http://<?= APP_HOST ?>/investimento/exclusao/<?= $investimento->getId() ?>"
+                    <a href="http://<?= APP_HOST ?>/emprestimo/exclusao/<?= $emprestimo->getId() ?>"
                       class="btn btn-danger btn-sm">Excluir</a>
                   </td>
                 </tr>

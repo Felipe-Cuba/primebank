@@ -1,7 +1,7 @@
 <div class="container my-3">
   <div class="row">
     <div class="col-md-12">
-      <a href="http://<?= APP_HOST ?>/investimento/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
+      <a href="http://<?= APP_HOST ?>/extrato/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
     </div>
 
     <div class="col-md-12 mt-3">
@@ -12,7 +12,7 @@
       <?php } ?>
 
       <?php
-      if (!count($viewVar['listaInvestimentos'])) {
+      if (!count($viewVar['listaExtratos'])) {
         ?>
         <div class="alert alert-info" role="alert">Nenhum investimento encontrado</div>
         <?php
@@ -25,42 +25,57 @@
               <tr>
                 <th>ID</th>
                 <th>Número da conta</th>
-                <th>Tipo de investimento</th>
-                <th>Taxa</th>
+                <th>Ação</th>
                 <th>Valor</th>
+                <th>Data de Cadastro</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody>
               <?php
+
+
               $contas = $viewVar['listaContas'];
-              foreach ($viewVar['listaInvestimentos'] as $investimento) {
-                $conta = array_values(array_filter($contas, function ($conta) use ($investimento) {
-                  return $conta->getId() === $investimento->getIdConta();
+              foreach ($viewVar['listaExtratos'] as $extrato) {
+                $conta = array_values(array_filter($contas, function ($conta) use ($extrato) {
+                  return $conta->getId() === $extrato->getIdConta();
                 }));
+
+                $acao = '';
+
+                if ($extrato->getAcao() === 'deposito') {
+                  $acao = "Depósito";
+                } else if ($extrato->getAcao() === 'saque') {
+                  $acao = "Saque";
+                } else {
+                  $acao = "Pagamento";
+                }
                 ?>
+
 
                 <tr>
                   <td>
-                    <?= $investimento->getId() ?>
+                    <?= $extrato->getId() ?>
                   </td>
                   <td>
                     <?= $conta[0]->getNumero() ?>
                   </td>
                   <td>
-                    <?= $investimento->getTipoInvestimento() ?>
-                  </td>
-                  <td>
-                    <?= $investimento->getTaxa() . '%' ?>
-                  </td>
-                  <td>
-                    <?= $investimento->getValorFormatado() ?>
+                    <?= $acao ?>
                   </td>
 
                   <td>
-                    <a href="http://<?= APP_HOST ?>/investimento/edicao/<?= $investimento->getId() ?>"
+                    <?= $extrato->getValorFormatado() ?>
+                  </td>
+
+                  <td>
+                    <?= $extrato->getDataCadastro()->format('d/m/Y') ?>
+                  </td>
+
+                  <td>
+                    <a href="http://<?= APP_HOST ?>/extrato/edicao/<?= $extrato->getId() ?>"
                       class="btn btn-primary btn-sm">Editar</a>
-                    <a href="http://<?= APP_HOST ?>/investimento/exclusao/<?= $investimento->getId() ?>"
+                    <a href="http://<?= APP_HOST ?>/extrato/exclusao/<?= $extrato->getId() ?>"
                       class="btn btn-danger btn-sm">Excluir</a>
                   </td>
                 </tr>

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="col-md-3"></div>
   <div class="col-md-6">
-    <h1>Excluir Usuario</h1>
+    <h1>Excluir Conta</h1>
 
     <?php if ($Sessao::returnError()) { ?>
       <div class="alert alert-warning" role="alert">
@@ -12,19 +12,20 @@
       </div>
     <?php } ?>
 
-    <form action="http://<?php echo APP_HOST; ?>/usuarios/excluir" method="post" id="form_cadastro">
-      <input type="hidden" class="form-control" name="id" id="id" value="<?php echo $viewVar['usuario']->getId(); ?>">
+    <form action="http://<?php echo APP_HOST; ?>/agencia/excluir" method="post" id="form_cadastro">
+      <input type="hidden" class="form-control" name="id" id="id" value="<?php echo $viewVar['agencia']->getId(); ?>">
 
       <div class="panel panel-danger">
         <div class="panel-body">
-          Deseja realmente excluir o usuário: <b>
-            <?= $viewVar['usuario']->getNome() ?>
+          Deseja realmente excluir a agencia: <b>
+            <?= $viewVar['agencia']->getNome() ?> -
+            <?= $viewVar['agencia']->getNumero() ?>
           </b>?
         </div>
         <br />
         <div class="panel-footer">
           <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-          <a href="http://<?php echo APP_HOST; ?>/usuarios" class="btn btn-info btn-sm">Voltar</a>
+          <a href="http://<?php echo APP_HOST; ?>/agencia" class="btn btn-info btn-sm">Voltar</a>
         </div>
       </div>
     </form>

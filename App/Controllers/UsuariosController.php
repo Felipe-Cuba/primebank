@@ -96,7 +96,7 @@ class UsuariosController extends Controller
 
         if ($resultadoValidacao->getErros()) {
             Sessao::recordError($resultadoValidacao->getErros());
-            $this->redirect('/usuarios/edition/' . $f['id']);
+            $this->redirect('/usuarios/edicao/' . $f['id']);
         }
 
         $ususarioDAO = new UsuarioDAO();

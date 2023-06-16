@@ -28,6 +28,7 @@
                 <th>Tipo de investimento</th>
                 <th>Taxa</th>
                 <th>Valor</th>
+                <th>Valor taxado</th>
                 <!-- <th>Ações</th> -->
               </tr>
             </thead>
@@ -51,10 +52,13 @@
                     <?= $investimento->getTipoInvestimento() ?>
                   </td>
                   <td>
-                    <?= $investimento->getTaxa() . '%' ?>
+                    <?= ($investimento->getTaxa() * 100) . '%' ?>
                   </td>
                   <td>
                     <?= $investimento->getValorFormatado() ?>
+                  </td>
+                  <td>
+                    <?= $investimento->getValorTaxadoFormatado() ?>
                   </td>
                 </tr>
               <?php } ?>

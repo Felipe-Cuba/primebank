@@ -18,7 +18,8 @@ class InvestimentoDAO extends BaseDAO
             'id_conta' => $investimento->getIdConta(),
             'tipo_investimento' => $investimento->getTipoInvestimento(),
             'taxa' => $investimento->getTaxa(),
-            'valor' => $investimento->getValor()
+            'valor' => $investimento->getValor(),
+            'valor_taxado' => $investimento->getValorTaxado(),
         ];
 
         return $this->create($data);
@@ -30,7 +31,8 @@ class InvestimentoDAO extends BaseDAO
             'id_conta' => $investimento->getIdConta(),
             'tipo_investimento' => $investimento->getTipoInvestimento(),
             'taxa' => $investimento->getTaxa(),
-            'valor' => $investimento->getValor()
+            'valor' => $investimento->getValor(),
+            'valor_taxado' => $investimento->getValorTaxado(),
         ];
 
         return $this->update($investimento->getId(), $data);
@@ -84,6 +86,7 @@ class InvestimentoDAO extends BaseDAO
         $investimento->setTipoInvestimento($investimentoData['tipo_investimento']);
         $investimento->setTaxa($investimentoData['taxa']);
         $investimento->setValor($investimentoData['valor']);
+        $investimento->setValorTaxado($investimentoData['valor_taxado']);
 
         return $investimento;
     }

@@ -8,6 +8,7 @@ use App\Models\DAO\InvestimentoDAO;
 use App\Models\Entidades\Investimento;
 use App\Models\DAO\UsuarioDAO;
 use App\Models\Validacao\InvestimentoValidador;
+use Exception;
 
 class InvestimentoController extends Controller
 {
@@ -32,8 +33,29 @@ class InvestimentoController extends Controller
         Sessao::clearMessage();
     }
 
+    public function listaInvestimento()
+    {
+        $id_usuario = Sessao::get('usuario_id');
+
+        $contaDAO = new ContaDAO();
+        $investimentoDAO = new InvestimentoDAO();
+
+        $conta = $contaDAO->buscarPorUsuario($id_usuario);
+
+        $investimentos = $investimentoDAO->buscar(['id_conta' => $conta->getId()]);
+
+        self::setViewParam('contaInvestimento', $conta);
+        self::setViewParam('listaInvestimentos', $investimentos);
+
+        $this->render('/investimento/lista-investimento');
+
+        Sessao::clearMessage();
+    }
+
     public function salvar()
     {
+        $contaDAO = new ContaDAO();
+        $investimentoDAO = new InvestimentoDAO();
         $f = $_POST;
 
         $id_usuario = Sessao::get('usuario_id');
@@ -43,9 +65,25 @@ class InvestimentoController extends Controller
 
         $taxaJuros = $this->getTaxaJuros();
 
-        $contaDAO = new ContaDAO();
 
         $conta = $contaDAO->buscarPorUsuario($id_usuario);
+
+        $valorTaxado = $valor - ($valor * $taxaJuros[$tipo_investimento]);
+
+
+        $investimento = new Investimento();
+
+        $investimento->setIdConta($conta->getId());
+        $investimento->setTaxa($taxaJuros[$tipo_investimento]);
+        $investimento->setTipoInvestimento($tipo_investimento);
+        $investimento->setValor($valor);
+        $investimento->setValorTaxado($valorTaxado);
+
+        if ($investimentoDAO->salvar($investimento)) {
+            $this->redirect('/home');
+        } else {
+            throw new Exception('Erro interno do servidor', 500);
+        }
 
     }
 

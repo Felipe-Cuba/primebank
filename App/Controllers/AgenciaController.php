@@ -40,6 +40,8 @@ class AgenciaController extends Controller
     public function salvar()
     {
         $f = $_POST;
+
+        print_r($f);
         $Agencia = new Agencia();
         $Agencia->setNome($f['nome']);
         $Agencia->setNumero($f['numero']);

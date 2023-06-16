@@ -77,4 +77,19 @@ class Emprestimo
     {
         $this->parcelas_pagas = $parcelas_pagas;
     }
+
+    public function getValorParcela(): float
+    {
+        $valorParcela = $this->valor / $this->parcelas;
+        $valorTaxado = $valorParcela + ($valorParcela * ($this->taxa / 100));
+        return $valorTaxado;
+    }
+
+    public function getValorParcelaFormatado(): string
+    {
+        $valor = $this->getValorParcela();
+        $valorFormatado = number_format($valor, 2, ',', '.');
+        return 'R$ ' . $valorFormatado; // Adapte para o símbolo de moeda desejado
+    }
+
 }

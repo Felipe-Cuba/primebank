@@ -66,5 +66,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
         </ul>
 
         <a href="http://<?php echo APP_HOST; ?>/usuarios/perfil" class="btn btn-primary mt-4">Acessar Perfil</a>
+        <a href="http://<?php echo APP_HOST; ?>/investimento/lista-investimento" class="btn btn-primary mt-4">Acessar Investimentos</a>
+        <a href="http://<?php echo APP_HOST; ?>/emprestimo/lista-emprestimo" class="btn btn-primary mt-4">Acessar Empprestimo</a>
     <?php endif; ?>
 </div>

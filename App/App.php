@@ -75,6 +75,11 @@ class App
             4 => 'Renda Fixa'
         ]);
 
+        define('TIPOS_PAGAMENTO', [
+            1 => 'Saldo primebank',
+            2 => 'Cartão de crédito'
+        ]);
+
         $this->loadPermissions();
         $this->loadPublicRoutes();
         $this->loadAdminRoutes();

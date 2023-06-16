@@ -125,6 +125,7 @@ CREATE TABLE
         `tipo_investimento` VARCHAR(45) NULL,
         `taxa` FLOAT NULL,
         `valor` FLOAT NULL,
+        `valor_taxado` FLOAT NULL,
         PRIMARY KEY (`id`),
         INDEX `fk_investimento_conta1_idx` (`id_conta` ASC),
         CONSTRAINT `fk_investimento_conta1` FOREIGN KEY (`id_conta`) REFERENCES `primebank`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION

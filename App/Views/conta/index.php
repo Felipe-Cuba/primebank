@@ -45,6 +45,7 @@
                 $agencia = array_values(array_filter($agencias, function ($agencia) use ($conta) {
                   return $agencia->getId() === $conta->getIdAgencia();
                 }));
+
                 ?>
 
                 <tr>

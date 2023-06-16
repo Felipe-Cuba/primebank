@@ -72,12 +72,14 @@ class ContaController extends Controller
         $agenciaDAO = new AgenciaDAO();
         $usuarioDAO = new UsuarioDAO();
 
-        self::setViewParam('agencias', $agenciaDAO->listar());
-        self::setViewParam('usuarios', $usuarioDAO->listar());
 
 
         $conta = $contaDAO->buscaId($id);
 
+        $usuario = $usuarioDAO->buscaId($conta->getUsuario());
+
+        self::setViewParam('agencias', $agenciaDAO->listar());
+        self::setViewParam('usuario', $usuario);
         if (!$conta) {
             Sessao::recordMessage("Conta Inexistente!");
             $this->redirect('/conta');
@@ -90,17 +92,19 @@ class ContaController extends Controller
         Sessao::clearMessage();
     }
 
-    public function atualizar()
+    public function atualizar($params)
     {
         $f = $_POST;
-        print_r($f);
-        $conta = new Conta();
-        $conta->setId($f['id']);
+
+        // print_r($f);
+
+        $contaDAO = new ContaDAO();
+
+        $conta = $contaDAO->buscaId($params[0]);
         $conta->setIdAgencia($f['id_agencia']);
-        $conta->setNumero($f['numero']);
-        $conta->setSaldo($f['saldo']);
         $conta->setTipoConta($f['tipo_conta']);
-        $conta->setUsuario($f['id_usuario']);
+
+        // print_r($conta->getIdAgencia());
 
         Sessao::recordForm($f);
 
@@ -109,10 +113,9 @@ class ContaController extends Controller
 
         if ($resultadoValidacao->getErros()) {
             Sessao::recordError($resultadoValidacao->getErros());
-            $this->redirect('/conta/edicao/' . $f['id']);
+            // $this->redirect('/conta/edicao/' . $f['id']);
         }
 
-        $contaDAO = new ContaDAO();
 
         $contaDAO->atualizar($conta);
 
@@ -120,7 +123,7 @@ class ContaController extends Controller
         Sessao::clearMessage();
         Sessao::clearError();
 
-        $this->redirect('/conta');
+        // $this->redirect('/conta');
     }
 
     public function exclusao($params)

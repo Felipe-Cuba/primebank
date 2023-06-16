@@ -47,5 +47,11 @@
 }
 
 .value-red {
-  color: #ff5959
+  color: #ff5959;
+}
+
+.item-cell-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #479129;
 }

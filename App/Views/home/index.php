@@ -28,7 +28,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
                     <div class="card-body">
                         <h2 class="card-title">Empréstimos</h2>
                         <p class="card-text">Obtenha o financiamento necessário para alcançar seus objetivos.</p>
-                        <a href="http://<?php echo APP_HOST; ?>/emprestimo" class="btn btn-secondary">Saiba mais</a>
+                        <a href="http://<?php echo APP_HOST; ?>/usuarios/cadastro" class="btn btn-secondary">Saiba mais</a>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
                     <div class="card-body">
                         <h2 class="card-title">Investimentos</h2>
                         <p class="card-text">Faça seu dinheiro crescer com nossas opções de investimento.</p>
-                        <a href="http://<?php echo APP_HOST; ?>/investimento" class="btn btn-secondary">Explore</a>
+                        <a href="http://<?php echo APP_HOST; ?>/usuarios/cadastro" class="btn btn-secondary">Explore</a>
                     </div>
                 </div>
             </div>

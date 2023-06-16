@@ -170,7 +170,7 @@ class App
             $this->controller = $this->verificaArray($path, 0);
             $this->action = $this->formatActionName($this->verificaArray($path, 1));
 
-            if (!$this->controller || !$this->action) {
+            if (!$this->controller) {
                 $this->controller = 'home';
             }
 

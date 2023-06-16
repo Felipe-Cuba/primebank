@@ -36,9 +36,12 @@
                             <?php
                             $conta = $viewVar['contaEmprestimo'];
                             foreach ($viewVar['listaEmprestimos'] as $emprestimo) {
+                                $numParcelas = $emprestimo->getParcelas();
+                                $numParcelasPagas = $emprestimo->getParcelasPagas();
+
                                 ?>
 
-                                <tr>
+                                <tr class="align-middle">
                                     <td>
                                         <?= $conta->getNumero() ?>
                                     </td>
@@ -49,15 +52,29 @@
                                         <?= $emprestimo->getValorFormatado() ?>
                                     </td>
                                     <td>
-                                        <?= $emprestimo->getParcelas() ?>
+                                        <?= $numParcelas ?>
                                     </td>
                                     <td>
-                                        <?= $emprestimo->getParcelasPagas() ?>
+                                        <?= $numParcelasPagas ?>
                                     </td>
 
-                                    <td>
-                                        <a href="http://<?= APP_HOST ?>/emprestimo/pagar-parcela/<?= $emprestimo->getId() ?>"
-                                            class="btn btn-primary btn-sm">Pagar parcela</a>
+                                    <td >
+                                        <?php
+                                        if ($numParcelas !== $numParcelasPagas):
+
+                                            ?>
+                                            <a href="http://<?= APP_HOST ?>/emprestimo/pagar-parcela/<?= $emprestimo->getId() ?>"
+                                                class="btn btn-primary btn-sm">Pagar parcela</a>
+                                            <?php
+
+                                        else:
+
+                                            ?>
+                                            <span class="m-0 p-0 item-cell-text">Parcelas finalizadas!</span>
+                                            <?php
+
+                                        endif;
+                                        ?>
                                     </td>
                                 </tr>
                             <?php } ?>

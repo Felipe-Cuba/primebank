@@ -1,6 +1,7 @@
 <?php
 // Verifique se há um objeto Conta disponível
 $conta = $viewVar['conta'];
+$usuario = $viewVar['usuario'];
 ?>
 
 <div class="container my-3">
@@ -13,8 +14,13 @@ $conta = $viewVar['conta'];
         </div>
       <?php } ?>
 
-      <form class="form-group" action="http://<?php echo APP_HOST; ?>/conta/atualizar" method="post">
+      <form class="form-group" action="http://<?php echo APP_HOST; ?>/conta/atualizar/<?= $conta->getId() ?>"
+        method="post">
         <input type="hidden" class="form-control" name="id" id="id" value="<?php echo $conta->getId(); ?>">
+        <div class="mt-2">
+          <label class="form-lable" for="id_usuario">Usuário:</label>
+          <input type="text" class="form-control" step="0.01" value="<?= $usuario->getNome() ?>" readonly>
+        </div>
         <div class="mt-2">
           <label class="form-lable" for="numero_agencia">Agência:</label>
           <select class="form-control" id="id_agencia" name="id_agencia" required>
@@ -47,25 +53,9 @@ $conta = $viewVar['conta'];
         <div class="mt-2">
           <label class="form-lable" for="numero">Numero da conta:</label>
           <input type="text" class="form-control" id="numero" name="numero" step="0.01"
-            value="<?php echo $conta->getNumero(); ?>" required>
+            value="<?php echo $conta->getNumero(); ?>" readonly>
         </div>
-        <div class="mt-2">
-          <label class="form-lable" for="saldo">Saldo:</label>
-          <input type="number" class="form-control" id="saldo" name="saldo" step="0.01"
-            value="<?php echo $conta->getSaldo(); ?>" required>
-        </div>
-        <div class="mt-2">
-          <label class="form-lable" for="id_usuario">Usuário:</label>
-          <select class="form-control" id="id_usuario" name="id_usuario" required>
-            <option value="0">Selecione um usuário</option>
-            <?php foreach ($viewVar['usuarios'] as $usuario) {
-              $selected = ($usuario->getId() == $conta->getUsuario()) ? 'selected' : '';
-              ?>
-              <option value="<?php echo $usuario->getId(); ?>" <?php echo $selected; ?>><?php echo $usuario->getNome(); ?>
-              </option>
-            <?php } ?>
-          </select>
-        </div>
+
         <button type="submit" class="btn btn-primary mt-2">Atualizar</button>
       </form>
     </div>

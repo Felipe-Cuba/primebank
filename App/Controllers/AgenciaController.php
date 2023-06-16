@@ -23,13 +23,13 @@ class AgenciaController extends Controller
 
         Sessao::clearMessage();
     }
-    public function cadastro()
+    public function registro()
     {
         $bancoDAO = new BancoDAO();
 
         self::setViewParam('bancos', $bancoDAO->listar());
 
-        $this->render('agencia/cadastro');
+        $this->render('agencia/registro');
 
         Sessao::clearForm();
         Sessao::clearError();

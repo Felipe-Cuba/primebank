@@ -1,7 +1,7 @@
 <div class="container my-3">
   <div class="row">
     <div class="col-md-12">
-      <a href="http://<?= APP_HOST ?>/emprestimo/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
+      <a href="http://<?= APP_HOST ?>/emprestimo/registro" class="btn btn-secondary btn-sm">Adicionar</a>
     </div>
 
     <div class="col-md-12 mt-3">

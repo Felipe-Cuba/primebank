@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Controllers\HomeController;
+use App\Lib\Autenticacao;
 use Exception;
 
 class App
@@ -11,6 +12,12 @@ class App
     private $controllerFile;
     private $action;
     private $params;
+
+    private array $userPermissions;
+    private array $userPublicRoutes;
+
+    private string $appHost;
+
     public $controllerName;
 
     public function __construct()
@@ -18,7 +25,9 @@ class App
         /*
          * Constantes do sistema
          */
-        define('APP_HOST', $_SERVER['HTTP_HOST'] . "/primebank");
+        $this->appHost = "/primebank";
+
+        define('APP_HOST', $_SERVER['HTTP_HOST'] . $this->appHost);
         define('PATH', realpath('./'));
         define('TITLE', "PrimeBank");
         define('DB_HOST', "localhost");
@@ -26,6 +35,26 @@ class App
         define('DB_PASSWORD', "");
         define('DB_NAME', "primebank");
         define('DB_DRIVER', "mysql");
+
+        define('TIPOS_CONTA', [
+            1 => 'Conta Corrente',
+            2 => 'Conta Poupança',
+            3 => 'Conta Investimento'
+        ]);
+
+        define('TIPOS_TRANSACAO', [
+            1 => 'Saque',
+            2 => 'Depósito',
+            3 => 'Pagamento'
+        ]);
+
+        define('TIPOS_USUARIO', [
+            1 => 'Administrador',
+            2 => 'Cliente'
+        ]);
+
+        $this->loadPermissions();
+        $this->loadPublicRoutes();
 
         $this->url();
     }
@@ -78,6 +107,8 @@ class App
             throw new Exception("Erro na aplicação", 500);
         }
 
+        $this->checkAuthenticationAndPermission();
+
         if (method_exists($objetoController, $this->action)) {
             $objetoController->{$this->action}($this->params);
             return;
@@ -101,14 +132,37 @@ class App
             $path = explode('/', $path);
 
             $this->controller = $this->verificaArray($path, 0);
-            $this->action = $this->verificaArray($path, 1);
+            $this->action = $this->formatActionName($this->verificaArray($path, 1));
 
             if ($this->verificaArray($path, 2)) {
                 unset($path[0]);
                 unset($path[1]);
+
                 $this->params = array_values($path);
             }
         }
+    }
+
+    private function loadPermissions()
+    {
+        $this->userPermissions = [
+            'registro' => 'Administrador',
+            'editar' => 'Administrador',
+            'exclusao' => 'Administrador',
+            'index' => 'Administrador',
+            'perfil' => 'Cliente',
+            'alterar-senha' => 'Cliente',
+            'alterar-documento' => 'Cliente',
+            'alterar-email' => 'Cliente'
+        ];
+    }
+
+    private function loadPublicRoutes()
+    {
+        $this->userPublicRoutes = [
+            'cadastro',
+            'login'
+        ];
     }
 
     private function verificaArray($array, $key)
@@ -117,5 +171,40 @@ class App
             return $array[$key];
         }
         return null;
+    }
+
+    private function formatActionName($action)
+    {
+        $parts = explode('-', $action);
+        $formattedAction = '';
+
+        foreach ($parts as $part) {
+            $formattedAction .= ucfirst($part);
+        }
+
+        return lcfirst($formattedAction);
+    }
+
+    private function checkAuthenticationAndPermission()
+    {
+        $route = !isset($this->action) || $this->action === '' ? 'index' : $this->action;
+
+
+        if ($this->controller === 'usuarios') {
+
+            if (in_array($route, $this->userPublicRoutes)) {
+                if (Autenticacao::isAuthenticated()) {
+                    header("Location: {$this->appHost}"); // Redirecionar para a página de boas-vindas
+                    exit;
+                }
+                return;
+            }
+
+            if (isset($this->userPermissions[$route])) {
+                $requiredPermission = $this->userPermissions[$route];
+                Autenticacao::checkPermission($requiredPermission);
+            }
+
+        }
     }
 }

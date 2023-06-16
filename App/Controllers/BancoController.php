@@ -20,9 +20,9 @@ class BancoController extends Controller
 
         Sessao::clearMessage();
     }
-    public function cadastro()
+    public function registro()
     {
-        $this->render('banco/cadastro');
+        $this->render('banco/registro');
 
         Sessao::clearForm();
         Sessao::clearError();

@@ -1,5 +1,5 @@
 body {
-  background-color: #f3f3f3;
+  background-color: #f2f2f2;
 }
 
 .bg-primary {
@@ -25,4 +25,14 @@ body {
 .btn-secondary:hover {
   background-color: #ffa42e !important;
   transition: .2s;
+}
+
+.link-primary {
+  color: #3b5fff !important;
+}
+
+.link-primary:hover {
+  color: #2748dd !important;
+  transition: .2s;
+  text-decoration: underline;
 }

@@ -99,6 +99,44 @@ class ContaDAO extends BaseDAO
         return $contaObjects;
     }
 
+    public function buscarPorUsuario(int $userId): ?Conta
+    {
+        $conditions = ['id_usuario' => $userId];
+        $contaData = $this->getWhere($conditions);
+
+        if (!empty($contaData)) {
+            return $this->setConta($contaData[0]);
+        }
+
+        return null;
+    }
+
+    public function generateAccountNumber(): int
+    {
+
+        $minNumeroConta = 100000;
+        $maxNumeroConta = 999999;
+
+        $numeroConta = mt_rand($minNumeroConta, $maxNumeroConta);
+
+        while ($this->accountNumberExists($numeroConta)) {
+            $numeroConta = mt_rand($minNumeroConta, $maxNumeroConta);
+        }
+
+        return $numeroConta;
+    }
+
+    public function accountNumberExists(int $numeroConta): bool
+    {
+        $conditions = [
+            'numero' => $numeroConta
+        ];
+
+        $contas = $this->getWhere($conditions);
+
+        return !empty($contas);
+    }
+
     private function setConta(array $contaData): Conta
     {
         $conta = new Conta();
@@ -111,4 +149,5 @@ class ContaDAO extends BaseDAO
 
         return $conta;
     }
+
 }

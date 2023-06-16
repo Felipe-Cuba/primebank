@@ -4,10 +4,13 @@ namespace App\Controllers;
 
 use App\Models\DAO\AgenciaDAO;
 use App\Models\DAO\UsuarioDAO;
-use App\Lib\Sessao;
 use App\Models\DAO\ContaDAO;
+use App\Models\DAO\ExtratoDAO;
+use App\Lib\Sessao;
 use App\Models\Entidades\Conta;
+use App\Models\Entidades\Extrato;
 use App\Models\Validacao\ContaValidador;
+use Exception;
 
 class ContaController extends Controller
 {
@@ -25,7 +28,7 @@ class ContaController extends Controller
 
         Sessao::clearMessage();
     }
-    public function cadastro()
+    public function registro()
     {
         $agenciaDAO = new AgenciaDAO();
         $usuarioDAO = new UsuarioDAO();
@@ -33,7 +36,7 @@ class ContaController extends Controller
         self::setViewParam('agencias', $agenciaDAO->listar());
         self::setViewParam('usuarios', $usuarioDAO->listar());
 
-        $this->render('conta/cadastro');
+        $this->render('conta/registro');
 
         Sessao::clearForm();
         Sessao::clearError();
@@ -156,4 +159,70 @@ class ContaController extends Controller
         Sessao::recordMessage('Conta excluida com sucesso!');
         $this->redirect('/conta');
     }
+
+    public function transacao($params)
+    {
+        $tipo = $params[0];
+
+        $id = Sessao::get('usuario_id');
+
+        $contaDAO = new ContaDAO();
+
+        $conta = $contaDAO->buscarPorUsuario($id);
+
+        self::setViewParam('tipo_transacao', TIPOS_TRANSACAO[$tipo]);
+        self::setViewParam('saldo_conta', $conta->getSaldo());
+        self::setViewParam('saldo_conta_formatado', $conta->getSaldoFormatado());
+
+        $this->render('/conta/transacao');
+
+        Sessao::clearForm();
+    }
+
+    public function checkIn()
+    {
+        $f = $_POST;
+
+        $tipoTrasacao = $f['tipo_trasacao'];
+        $valor = $f['valor'];
+
+        $id = Sessao::get('usuario_id');
+
+        $contaDAO = new ContaDAO();
+        $conta = $contaDAO->buscarPorUsuario($id);
+
+        $saldo = $conta->getSaldo();
+
+        $key = array_search($tipoTrasacao, TIPOS_TRANSACAO);
+
+        if ($key !== false) {
+            if ($key !== 2) {
+                $isSufficient = $saldo >= $valor;
+
+                if (!$isSufficient) {
+                    throw new Exception('Saldo insuficiente', 400);
+                }
+
+                $conta->setSaldo($saldo - $valor);
+            } else {
+                $conta->setSaldo($saldo + $valor);
+            }
+
+            $extrato = new Extrato();
+            $extrato->setAcao($tipoTrasacao);
+            $extrato->setValor($valor);
+            $extrato->setIdConta($conta->getId());
+
+            $extratoDAO = new ExtratoDAO();
+
+            if ($extratoDAO->salvar($extrato) && $contaDAO->atualizar($conta)) {
+                $this->redirect('/usuarios/perfil');
+            } else {
+                throw new Exception('Erro interno do servidor', 500);
+            }
+        } else {
+            throw new Exception('Tipo de transação inválida', 400);
+        }
+    }
+
 }

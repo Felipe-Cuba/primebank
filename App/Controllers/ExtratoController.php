@@ -23,9 +23,9 @@ class ExtratoController extends Controller
 
         Sessao::clearMessage();
     }
-    public function cadastro()
+    public function registro()
     {
-        $this->render('extrato/cadastro');
+        $this->render('extrato/registro');
 
         Sessao::clearForm();
         Sessao::clearError();
@@ -46,7 +46,7 @@ class ExtratoController extends Controller
 
         if (!count($usuarios)) {
             Sessao::recordMessage('Não existem usuários cadastrados!');
-            $this->redirect('/extrato/cadastro');
+            $this->redirect('/extrato/registro');
         }
 
         $conditions = [
@@ -59,7 +59,7 @@ class ExtratoController extends Controller
 
         if (!count($contas)) {
             Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
-            $this->redirect('/extrato/cadastro');
+            $this->redirect('/extrato/registro');
         }
         //  Fim do trecho para buscar uma conta para realizar o cadastro!
 
@@ -79,7 +79,7 @@ class ExtratoController extends Controller
         if ($Extrato->getAcao() === "saque" || $Extrato->getAcao() === "pagamento") {
             if ($conta->getSaldo() < $Extrato->getValor()) {
                 Sessao::recordMessage('Saldo insuficiente ');
-                $this->redirect('/extrato/cadastro');
+                $this->redirect('/extrato/registro');
             } else {
                 $conta->setSaldo($conta->getSaldo() - $Extrato->getValor());
                 $contaDAO->atualizar($conta);

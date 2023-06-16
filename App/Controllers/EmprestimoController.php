@@ -25,9 +25,9 @@ class EmprestimoController extends Controller
 
         Sessao::clearMessage();
     }
-    public function cadastro()
+    public function registro()
     {
-        $this->render('emprestimo/cadastro');
+        $this->render('emprestimo/registro');
 
         Sessao::clearForm();
         Sessao::clearError();
@@ -46,7 +46,7 @@ class EmprestimoController extends Controller
 
         if (!count($usuarios)) {
             Sessao::recordMessage('Não existem usuários cadastrados!');
-            $this->redirect('/extrato/cadastro');
+            $this->redirect('/emprestimo/registro');
         }
 
         $conditions = [
@@ -59,7 +59,7 @@ class EmprestimoController extends Controller
 
         if (!count($contas)) {
             Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
-            $this->redirect('/extrato/cadastro');
+            $this->redirect('/emprestimo/registro');
         }
         //  Fim do trecho para buscar uma conta para realizar o cadastro!
         $conta = $contas[0];

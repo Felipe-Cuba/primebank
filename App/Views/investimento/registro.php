@@ -1,7 +1,7 @@
 <div class="container my-3">
     <div class="card text-start">
         <div class="card-body">
-            <h1 class="card-title">Cadastro de Investimento</h1>
+            <h1 class="card-title">Registro de Investimento</h1>
             <?php if ($Sessao::returnMessage()) { ?>
                 <div class="alert alert-warning" role="alert">
                     <?php echo $Sessao::returnMessage(); ?>

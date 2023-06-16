@@ -12,7 +12,7 @@ class UsuarioDAO extends BaseDAO
         parent::__construct('usuario');
     }
 
-    public function salvar(Usuario $usuario): bool
+    public function salvar(Usuario $usuario): string|int|null
     {
         $data = [
             'nome' => $usuario->getNome(),
@@ -23,7 +23,11 @@ class UsuarioDAO extends BaseDAO
             'tipo' => $usuario->getTipo()
         ];
 
-        return $this->create($data);
+        if ($this->create($data)) {
+            return $this->conexao->lastInsertId();
+        }
+
+        return null;
     }
 
     public function atualizar(Usuario $usuario): bool
@@ -86,11 +90,31 @@ class UsuarioDAO extends BaseDAO
         return $usuarioObjects;
     }
 
+    public function buscarUsuario(array $conditions): ?Usuario
+    {
+        $usuarioData = parent::getWhere($conditions)[0] ?? null;
+
+        if ($usuarioData) {
+            return $this->setUsuario($usuarioData);
+        }
+
+        return null;
+    }
+
     public function emailExists(string $email): bool
     {
         $query = "SELECT COUNT(*) FROM {$this->getTableName()} WHERE email = :email";
         $stmt = $this->conexao->prepare($query);
         $stmt->bindValue(':email', $email);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function documentExists(string $document): bool {
+        $query = "SELECT COUNT(*) FROM {$this->getTableName()} WHERE documento = :documento";
+        $stmt = $this->conexao->prepare($query);
+        $stmt->bindValue(':documento', $document);
         $stmt->execute();
 
         return $stmt->fetchColumn() > 0;

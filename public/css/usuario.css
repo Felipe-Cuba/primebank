@@ -17,13 +17,6 @@ img {
     border-radius: 50px;
 }
 
-.cart {
-    width: 30%;
-    padding: 2%;
-    float: left;
-    margin: 0 7% 0 7%;
-}
-
 .font{
     font-size: 20px;
     float: left;
@@ -52,6 +45,13 @@ form {
     padding: 10px;
 }
 
+.input-data {
+    border-style: none none solid none;
+    border-width: 0 0 1px 0;
+    border-color: #ddd; /* Defina a cor da borda conforme necessário */
+    border-radius: 0;
+}
+
 button {
     padding: 10px 20px;
     background-color: blue;
@@ -77,10 +77,6 @@ button:hover{
     margin-left: 50%;
     margin-right: 30%;
     margin: auto;
-}
-
-.center{
-    text-align: center;
 }
 
 a{

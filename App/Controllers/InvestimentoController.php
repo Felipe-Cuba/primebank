@@ -24,9 +24,9 @@ class InvestimentoController extends Controller
 
         Sessao::clearMessage();
     }
-    public function cadastro()
+    public function registro()
     {
-        $this->render('investimento/cadastro');
+        $this->render('investimento/registro');
 
         Sessao::clearForm();
         Sessao::clearError();
@@ -46,7 +46,7 @@ class InvestimentoController extends Controller
 
         if (!count($usuarios)) {
             Sessao::recordMessage('Não existem usuários cadastrados!');
-            $this->redirect('/investimento/cadastro');
+            $this->redirect('/investimento/registro');
         }
 
         $conditions = [
@@ -59,7 +59,7 @@ class InvestimentoController extends Controller
 
         if (!count($contas)) {
             Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
-            $this->redirect('/investimento/cadastro');
+            $this->redirect('/investimento/registro');
         }
 
         //  Fim do trecho para buscar uma conta para realizar o cadastro!

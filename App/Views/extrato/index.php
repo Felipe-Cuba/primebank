@@ -1,7 +1,7 @@
 <div class="container my-3">
   <div class="row">
     <div class="col-md-12">
-      <a href="http://<?= APP_HOST ?>/extrato/cadastro" class="btn btn-secondary btn-sm">Adicionar</a>
+      <a href="http://<?= APP_HOST ?>/extrato/registro" class="btn btn-secondary btn-sm">Adicionar</a>
     </div>
 
     <div class="col-md-12 mt-3">
@@ -40,16 +40,6 @@
                 $conta = array_values(array_filter($contas, function ($conta) use ($extrato) {
                   return $conta->getId() === $extrato->getIdConta();
                 }));
-
-                $acao = '';
-
-                if ($extrato->getAcao() === 'deposito') {
-                  $acao = "Depósito";
-                } else if ($extrato->getAcao() === 'saque') {
-                  $acao = "Saque";
-                } else {
-                  $acao = "Pagamento";
-                }
                 ?>
 
 
@@ -61,7 +51,7 @@
                     <?= $conta[0]->getNumero() ?>
                   </td>
                   <td>
-                    <?= $acao ?>
+                    <?= $extrato->getAcao() ?>
                   </td>
 
                   <td>

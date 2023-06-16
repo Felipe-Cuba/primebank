@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\DAO\ContaDAO;
+use App\Models\DAO\ExtratoDAO;
 use App\Models\DAO\UsuarioDAO;
+use App\Models\Entidades\Extrato;
 use App\Models\Entidades\Usuario;
 use App\Lib\Sessao;
 use App\Models\DAO\EmprestimoDAO;
@@ -116,14 +118,16 @@ class EmprestimoController extends Controller
 
         $contaDAO = new ContaDAO();
         $emprestimoDAO = new EmprestimoDAO();
+        $extratoDAO = new ExtratoDAO();
 
         $conta = $contaDAO->buscarPorUsuario($id);
 
         $emprestimo = $emprestimoDAO->buscaId($id_emprestimo);
 
+        $extrato = new Extrato();
+
         $f = $_POST;
 
-        // print_r($f);
 
         $valor = floatval($f['valor_parcela']);
         $tipo_pagamento = $f['tipo_pagamento'];
@@ -137,24 +141,40 @@ class EmprestimoController extends Controller
         if ($diferença < $tolerancia) {
 
             if (TIPOS_PAGAMENTO[$tipo_pagamento] === 'Cartão de crédito') {
-                $emprestimo->setParcelasPagas(1);
+                $parcelasPagas = $emprestimo->getParcelasPagas();
+
+                $novasParcelas = $parcelasPagas + 1;
+
+                $emprestimo->setParcelasPagas($novasParcelas);
             }
 
             if (TIPOS_PAGAMENTO[$tipo_pagamento] === 'Saldo primebank') {
                 if ($conta->getSaldo() < $valor) {
                     throw new Exception('Saldo insuficiente', 400);
                 } else {
-                    $emprestimo->setParcelasPagas(1);
                     $conta->setSaldo($conta->getSaldo() - $valor);
 
                     if (!$contaDAO->atualizar($conta)) {
                         throw new Exception('Erro interno do servidor', 500);
                     }
+
+                    $extrato->setIdConta($conta->getId());
+                    $extrato->setValor($valor);
+                    $extrato->setAcao(TIPOS_TRANSACAO[3]);
+
+                    if (!$extratoDAO->salvar($extrato)) {
+                        throw new Exception('Erro interno do servidor', 500);
+                    }
+
+                    $parcelasPagas = $emprestimo->getParcelasPagas();
+
+                    $novasParcelas = $parcelasPagas + 1;
+
+                    $emprestimo->setParcelasPagas($novasParcelas);
+
                 }
 
             }
-
-
 
             if ($emprestimoDAO->atualizar($emprestimo)) {
                 $this->redirect('/emprestimo/lista-emprestimo');
@@ -191,151 +211,4 @@ class EmprestimoController extends Controller
         return $taxas[$key];
     }
 
-    // public function registro()
-    // {
-    //     $this->render('emprestimo/registro');
-
-    //     Sessao::clearForm();
-    //     Sessao::clearError();
-    //     Sessao::clearMessage();
-    // }
-    // public function salvar()
-    // {
-    //     /*
-    //    Esse trecho de código está pegando o primeiro usuário da tabela para criar um emprestimo com a conta dele
-    //    pois no exato momento ainda não há controle de sessão no sistema.
-
-    //    ELE SERÁ RETIRADO NA VERSÃO FINAL DO PROJETO
-    //    */
-    //     $usuarioDAO = new UsuarioDAO();
-    //     $usuarios = $usuarioDAO->listar();
-
-    //     if (!count($usuarios)) {
-    //         Sessao::recordMessage('Não existem usuários cadastrados!');
-    //         $this->redirect('/emprestimo/registro');
-    //     }
-
-    //     $conditions = [
-    //         'id_usuario' => $usuarios[0]->getId()
-    //     ];
-
-    //     $contaDAO = new ContaDAO();
-
-    //     $contas = $contaDAO->buscar($conditions);
-
-    //     if (!count($contas)) {
-    //         Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
-    //         $this->redirect('/emprestimo/registro');
-    //     }
-    //     //  Fim do trecho para buscar uma conta para realizar o cadastro!
-    //     $conta = $contas[0];
-    //     $f = $_POST;
-    //     $Emprestimo = new Emprestimo();
-    //     $Emprestimo->setValor($f['valor']);
-    //     $Emprestimo->setTaxa($f['taxa']);
-    //     $Emprestimo->setParcelas($f['parcelas']);
-    //     $Emprestimo->setParcelasPagas($f['parcelasPagas']);
-    //     $Emprestimo->setIdConta($conta->getId());
-
-    //     Sessao::recordForm($f);
-    //     $EmprestimoDAO = new EmprestimoDAO();
-    //     if ($EmprestimoDAO->salvar($Emprestimo)) {
-    //         $this->redirect('/emprestimo');
-    //     } else {
-    //         Sessao::recordMessage('Ocorreu um erro!');
-    //     }
-    // }
-
-    // public function edicao($params)
-    // {
-    //     $id = $params[0];
-
-    //     $emprestimoDAO = new EmprestimoDAO();
-
-    //     $emprestimo = $emprestimoDAO->buscaId($id);
-
-    //     if (!$emprestimo) {
-    //         Sessao::recordMessage("Emprestimo Inexistente!");
-    //         $this->redirect('/emprestimo');
-    //     }
-
-    //     self::setViewParam('emprestimo', $emprestimo);
-
-    //     $this->render('/emprestimo/editar');
-
-    //     Sessao::clearMessage();
-    // }
-
-    // public function atualizar()
-    // {
-    //     $f = $_POST;
-    //     print_r($f);
-    //     $emprestimo = new Emprestimo();
-    //     $emprestimo->setId($f['id']);
-    //     $emprestimo->setIdConta($f['id_conta']);
-    //     $emprestimo->setTaxa($f['taxa']);
-    //     $emprestimo->setParcelas($f['parcelas']);
-    //     $emprestimo->setParcelasPagas($f['parcelas_pagas']);
-    //     $emprestimo->setValor($f['valor']);
-
-    //     Sessao::recordForm($f);
-
-    //     $emprestimoValidador = new EmprestimoValidador();
-    //     $resultadoValidacao = $emprestimoValidador->validar($emprestimo);
-
-    //     if ($resultadoValidacao->getErros()) {
-    //         Sessao::recordError($resultadoValidacao->getErros());
-    //         $this->redirect('/emprestimo/edicao/' . $f['id']);
-    //     }
-
-    //     $emprestimoDAO = new EmprestimoDAO();
-
-    //     $emprestimoDAO->atualizar($emprestimo);
-
-    //     Sessao::clearForm();
-    //     Sessao::clearMessage();
-    //     Sessao::clearError();
-
-    //     $this->redirect('/emprestimo');
-    // }
-
-    // public function exclusao($params)
-    // {
-    //     $id = $params[0];
-
-    //     $emprestimoDAO = new EmprestimoDAO();
-
-    //     $emprestimo = $emprestimoDAO->buscaId($id);
-
-    //     $contaDAO = new ContaDAO();
-    //     self::setViewParam('listaContas', $contaDAO->listar());
-
-    //     if (!$emprestimo) {
-    //         Sessao::recordMessage("Emprestimo Inexistente!");
-    //         $this->redirect('/emprestimo');
-    //     }
-
-    //     self::setViewParam('emprestimo', $emprestimo);
-
-    //     $this->render('/emprestimo/exclusao');
-
-    //     Sessao::clearMessage();
-    // }
-
-    // public function excluir()
-    // {
-    //     $f = $_POST;
-    //     $emprestimo = new Emprestimo();
-    //     $emprestimo->setId($f['id']);
-
-    //     $emprestimoDAO = new EmprestimoDAO();
-
-    //     if (!$emprestimoDAO->excluir($emprestimo)) {
-    //         Sessao::recordMessage('Emprestimo Inexistente!');
-    //         $this->redirect('/emprestimo');
-    //     }
-
-    //     Sessao::recordMessage('Emprestimo excluido com sucesso!');
-    //     $this->redirect('/emprestimo');
-    // }
 }

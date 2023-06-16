@@ -23,6 +23,12 @@ class Autenticacao
     exit;
   }
 
+  public static function redirectToHome()
+  {
+    header('Location: /primebank/home');
+    exit;
+  }
+
   private static function handleUnauthorizedAccess()
   {
     throw new Exception('Acesso não autorizado', 403);

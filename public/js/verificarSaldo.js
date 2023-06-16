@@ -1,52 +1,61 @@
+const convertToNumber = (value) => {
+  const numberFormatRegex = /^[\d.,]+$/;
+  if (typeof value === 'number') {
+    return value;
+  }
+  let number = value.replace(/\s{1}/, '').replace('R$', '').replace('.', '');
+
+  if (!number || !numberFormatRegex.test(number)) {
+    return 0.0;
+  }
+  number = number.replace(',', '.');
+  return Number(number);
+};
+
+const toDecimal = (value) => {
+  return parseFloat(Number(value).toFixed(2));
+};
+
 function verificarSaldo(saldoAtual, event) {
-  var valorDigitado = parseFloat(document.getElementById("valor").value);
+  const valorDigitado = parseFloat(document.getElementById('valor').value);
 
   if (valorDigitado > saldoAtual) {
-    var alertElement = document.getElementById("warningAlert");
-    var msgElement = document.getElementById("msg");
+    const alertElement = document.getElementById('warningAlert');
+    const msgElement = document.getElementById('msg');
 
-    msgElement.innerText = "Saldo insuficiente!";
+    msgElement.textContent = 'Saldo insuficiente!';
     alertElement.hidden = false;
 
     event.preventDefault();
   }
 }
 
-// Função para verificar o saldo antes de enviar o formulário
 function validarPagamentoParcela(radioId) {
-  // Obtém o valor do saldo atual e o valor da parcela do HTML
-  var saldoAtual = parseFloat(
-    document.getElementById("saldo-conta").textContent.replace("R$", "").trim()
+  const saldoAtual = convertToNumber(
+    document.getElementById('saldo-conta').textContent.replace('R$', '').trim()
   );
-  var valorParcela = parseFloat(
-    document.getElementById("valor-parcela").value.replace("R$", "").trim()
+  const valorParcela = toDecimal(
+    document.getElementById('valor-parcela').value.replace('R$', '').trim()
   );
 
-  // Verifica qual rádio está selecionado
-  var radio = document.getElementById(radioId);
+  // console.log(toDecimal(saldoAtual), toDecimal(valorParcela));
+
+  const radio = document.getElementById(radioId);
   if (radio.checked) {
-    var tipoPagamento = radio.value;
-    if (tipoPagamento === "1") {
-      // Verifica se o saldo é suficiente
-
-      console.log(saldoAtual, valorParcela)
-
+    const tipoPagamento = radio.value;
+    if (tipoPagamento === '1') {
       if (saldoAtual < valorParcela) {
-        // Exibe o alerta de saldo insuficiente
-        document.getElementById("warningAlert").hidden = false;
-        document.getElementById("msg").textContent = "Saldo insuficiente.";
+        document.getElementById('warningAlert').hidden = false;
+        document.getElementById('msg').textContent = 'Saldo insuficiente.';
 
-        // Bloqueia o envio do formulário
-        document.getElementById("pagar").setAttribute("disabled", true);
+        document.getElementById('pagar').setAttribute('disabled', true);
       } else {
-        // Habilita o envio do formulário
-        document.getElementById("warningAlert").hidden = true;
-        document.getElementById("pagar").removeAttribute("disabled");
+        document.getElementById('warningAlert').hidden = true;
+        document.getElementById('pagar').removeAttribute('disabled');
       }
-    } else if (tipoPagamento === "2") {
-      // Habilita o envio do formulário
-      document.getElementById("warningAlert").hidden = true;
-      document.getElementById("pagar").removeAttribute("disabled");
+    } else if (tipoPagamento === '2') {
+      document.getElementById('warningAlert').hidden = true;
+      document.getElementById('pagar').removeAttribute('disabled');
     }
   }
 }

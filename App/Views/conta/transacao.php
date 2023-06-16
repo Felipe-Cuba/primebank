@@ -34,7 +34,7 @@ $tipoTransacao = $viewVar['tipo_transacao'];
           <label for="valor" class="form-label">Valor</label>
           <input type="text" class="form-control" id="valor" name="valor" required>
         </div>
-        <button type="submit" class="btn btn-primary">Alterar</button>
+        <button type="submit" class="btn btn-primary">Finalizar</button>
       </form>
     </div>
   </div>

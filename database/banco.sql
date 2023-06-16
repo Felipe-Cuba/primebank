@@ -132,3 +132,25 @@ CREATE TABLE
         INDEX `fk_investimento_conta1_idx` (`id_conta` ASC),
         CONSTRAINT `fk_investimento_conta1` FOREIGN KEY (`id_conta`) REFERENCES `primebank`.`conta` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB;
+
+INSERT INTO
+    `primebank`.`banco` (nome, numero)
+VALUES ('Primebank', 1);
+
+INSERT INTO
+    `primebank`.`usuario` (
+        nome,
+        email,
+        senha,
+        documento,
+        data_nasc,
+        tipo
+    )
+VALUES (
+        'Admin Primebank',
+        'admin@primebank.com.br',
+        '123456',
+        '12345678910',
+        '2023-06-16',
+        1
+    );

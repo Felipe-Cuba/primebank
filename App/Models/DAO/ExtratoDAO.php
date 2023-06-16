@@ -17,8 +17,7 @@ class ExtratoDAO extends BaseDAO
         $data = [
             'id_conta' => $extrato->getIdConta(),
             'valor' => $extrato->getValor(),
-            'acao' => $extrato->getAcao(),
-            'data_cadastro' => $extrato->getDataCadastro()->format('Y-m-d H:i:s')
+            'acao' => $extrato->getAcao()
         ];
 
         return $this->create($data);
@@ -29,8 +28,7 @@ class ExtratoDAO extends BaseDAO
         $data = [
             'id_conta' => $extrato->getIdConta(),
             'valor' => $extrato->getValor(),
-            'acao' => $extrato->getAcao(),
-            'data_cadastro' => $extrato->getDataCadastro()->format('Y-m-d H:i:s')
+            'acao' => $extrato->getAcao()
         ];
 
         return $this->update($extrato->getId(), $data);
@@ -72,7 +70,7 @@ class ExtratoDAO extends BaseDAO
         $result = parent::getById($id);
 
         if ($result) {
-            $extrato = $this->setExtrato($result);
+            $extrato = $this->setExtrato($result[0]);
             return $extrato;
         }
 

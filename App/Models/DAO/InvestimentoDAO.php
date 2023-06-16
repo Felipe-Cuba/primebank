@@ -41,7 +41,7 @@ class InvestimentoDAO extends BaseDAO
         return $this->delete($investimento->getId());
     }
 
-    public function getAll(): array
+    public function listar(): array
     {
         $investimentos = parent::getAll();
 
@@ -58,7 +58,7 @@ class InvestimentoDAO extends BaseDAO
         $investimento = parent::getById($id);
 
         if ($investimento) {
-            return $this->setInvestimento($investimento);
+            return $this->setInvestimento($investimento[0]);
         }
 
         return null;

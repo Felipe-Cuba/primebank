@@ -50,6 +50,7 @@ CREATE TABLE
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_banco` INT NOT NULL,
         `nome` VARCHAR(45) NULL,
+        `numero` INT NOT NULL,
         PRIMARY KEY (`id`),
         INDEX `fk_agencia_banco1_idx` (`id_banco` ASC),
         CONSTRAINT `fk_agencia_banco1` FOREIGN KEY (`id_banco`) REFERENCES `primebank`.`banco` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -64,9 +65,10 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS `primebank`.`conta` (
         `id` INT NOT NULL AUTO_INCREMENT,
-        `id_agencia` INT NOT NULL,
+        `numero` INT NOT NULL,
         `tipo_conta` INT NOT NULL,
         `saldo` FLOAT NULL,
+        `id_agencia` INT NOT NULL,
         `id_usuario` INT NOT NULL,
         PRIMARY KEY (`id`),
         INDEX `fk_conta_usuario_idx` (`id_usuario` ASC),
@@ -86,7 +88,7 @@ CREATE TABLE
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_conta` INT NOT NULL,
         `valor` FLOAT NOT NULL,
-        `acao` VARCHAR(8) NOT NULL,
+        `acao` VARCHAR(10) NOT NULL,
         `data_cadastro` DATETIME GENERATED ALWAYS AS (NOW()) VIRTUAL,
         PRIMARY KEY (`id`),
         INDEX `fk_extrato_conta1_idx` (`id_conta` ASC),

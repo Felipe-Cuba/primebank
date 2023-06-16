@@ -16,6 +16,7 @@ class ContaDAO extends BaseDAO
     {
         $data = [
             'id_agencia' => $conta->getIdAgencia(),
+            'numero' => $conta->getNumero(),
             'tipo_conta' => $conta->getTipoConta(),
             'saldo' => $conta->getSaldo(),
             'id_usuario' => $conta->getUsuario()
@@ -27,7 +28,7 @@ class ContaDAO extends BaseDAO
     public function atualizar(Conta $conta): bool
     {
         $data = [
-            'id_agencia' => $conta->getIdAgencia(),
+            'id_agencia' => $conta->getId(),
             'tipo_conta' => $conta->getTipoConta(),
             'saldo' => $conta->getSaldo(),
             'id_usuario' => $conta->getUsuario()
@@ -36,23 +37,117 @@ class ContaDAO extends BaseDAO
         return $this->update($conta->getId(), $data);
     }
 
-    public function excluir(int $id): bool
+    public function excluir(Conta $conta): bool
     {
-        return $this->delete($id);
+        // Excluir investimentos relacionados à conta
+        $investimentoDAO = new InvestimentoDAO();
+        $investimentos = $investimentoDAO->buscar(['id_conta' => $conta->getId()]);
+        foreach ($investimentos as $investimento) {
+            $investimentoDAO->excluir($investimento);
+        }
+
+        // Excluir empréstimos relacionados à conta
+        $emprestimoDAO = new EmprestimoDAO();
+        $emprestimos = $emprestimoDAO->buscar(['id_conta' => $conta->getId()]);
+        foreach ($emprestimos as $emprestimo) {
+            $emprestimoDAO->excluir($emprestimo);
+        }
+
+        // Excluir extratos relacionados à conta
+        $extratoDAO = new ExtratoDAO();
+        $extratos = $extratoDAO->buscar(['id_conta' => $conta->getId()]);
+        foreach ($extratos as $extrato) {
+            $extratoDAO->excluir($extrato);
+        }
+
+        // Excluir a conta
+        return $this->delete($conta->getId());
     }
 
-    public function getAll(): array
+    public function listar(): array
     {
-        return $this->getAll();
+        $contas = parent::getAll();
+
+        $contaObjects = [];
+        foreach ($contas as $conta) {
+            $contaObjects[] = $this->setConta($conta);
+        }
+
+        return $contaObjects;
     }
 
-    public function getById(int $id): ?array
+    public function buscaId(int $id): ?Conta
     {
-        return $this->getById($id);
+        $conta = parent::getById($id);
+
+        if ($conta) {
+            return $this->setConta($conta[0]);
+        }
+
+        return null;
     }
 
-    public function getWhere(array $conditions): array
+    public function buscar(array $conditions): array
     {
-        return $this->getWhere($conditions);
+        $contas = parent::getWhere($conditions);
+
+        $contaObjects = [];
+        foreach ($contas as $conta) {
+            $contaObjects[] = $this->setConta($conta);
+        }
+
+        return $contaObjects;
     }
+
+    public function buscarPorUsuario(int $userId): ?Conta
+    {
+        $conditions = ['id_usuario' => $userId];
+        $contaData = $this->getWhere($conditions);
+
+        if (!empty($contaData)) {
+            return $this->setConta($contaData[0]);
+        }
+
+        return null;
+    }
+
+    public function generateAccountNumber(): int
+    {
+
+        $minNumeroConta = 100000;
+        $maxNumeroConta = 999999;
+
+        $numeroConta = mt_rand($minNumeroConta, $maxNumeroConta);
+
+        while ($this->accountNumberExists($numeroConta)) {
+            $numeroConta = mt_rand($minNumeroConta, $maxNumeroConta);
+        }
+
+        return $numeroConta;
+    }
+
+    public function accountNumberExists(int $numeroConta): bool
+    {
+        $conditions = [
+            'numero' => $numeroConta
+        ];
+
+        $contas = $this->getWhere($conditions);
+
+        return !empty($contas);
+    }
+
+    private function setConta(array $contaData): Conta
+    {
+        $conta = new Conta();
+        $conta->setId($contaData['id']);
+        $conta->setIdAgencia($contaData['id_agencia']);
+        $conta->setTipoConta($contaData['tipo_conta']);
+        $conta->setNumero($contaData['numero']);
+        $conta->setSaldo($contaData['saldo']);
+        $conta->setUsuario($contaData['id_usuario']);
+
+        return $conta;
+    }
+
 }

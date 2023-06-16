@@ -8,4 +8,8 @@ class HomeController extends Controller
     {
         $this->render('home/index');
     }
+
+    public function loadIndex() {
+        $this->redirect('/home/index');
+    }
 }

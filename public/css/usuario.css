@@ -1,0 +1,85 @@
+* {
+    margin: 0;
+    font-size: 15px;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+img {
+    width: 7%;
+    border-radius: 50px;
+}
+
+.font{
+    font-size: 20px;
+    float: left;
+}
+.conta{
+    width: 30%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: 10px;
+}
+
+input {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+label {
+    font-weight: 200;
+    display: block;
+}
+
+form {
+    margin: 10px;
+    padding: 10px;
+}
+
+.input-data {
+    border-style: none none solid none;
+    border-width: 0 0 1px 0;
+    border-color: #ddd; /* Defina a cor da borda conforme necessário */
+    border-radius: 0;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: blue;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+button:hover{
+    background-color: #ffa42e !important;
+    color: black;
+    transition: background-color 0.5s;
+    opacity: 80%;
+}
+
+.movimentos{
+    margin-top: 5%;
+}
+
+.tamanho {
+    width: 30% !important;
+    margin-left: 50%;
+    margin-right: 30%;
+    margin: auto;
+}
+
+a{
+    text-decoration: none;
+    color: #fff;
+}

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Controllers\HomeController;
+use App\Lib\Autenticacao;
 use Exception;
 
 class App
@@ -11,6 +12,16 @@ class App
     private $controllerFile;
     private $action;
     private $params;
+
+    private array $adminRoutes;
+    private array $userPublicRoutes;
+
+    private array $permissions;
+
+    private string $appHost;
+
+    private string $currentPage;
+
     public $controllerName;
 
     public function __construct()
@@ -18,7 +29,9 @@ class App
         /*
          * Constantes do sistema
          */
-        define('APP_HOST', $_SERVER['HTTP_HOST'] . "/primebank");
+        $this->appHost = "/primebank";
+
+        define('APP_HOST', $_SERVER['HTTP_HOST'] . $this->appHost);
         define('PATH', realpath('./'));
         define('TITLE', "PrimeBank");
         define('DB_HOST', "localhost");
@@ -26,6 +39,45 @@ class App
         define('DB_PASSWORD', "");
         define('DB_NAME', "primebank");
         define('DB_DRIVER', "mysql");
+
+        define('TIPOS_CONTA', [
+            1 => 'Conta Corrente',
+            2 => 'Conta Poupança',
+            3 => 'Conta Investimento'
+        ]);
+
+        define('TIPOS_TRANSACAO', [
+            1 => 'Saque',
+            2 => 'Depósito',
+            3 => 'Pagamento'
+        ]);
+
+        define('TIPOS_USUARIO', [
+            1 => 'Administrador',
+            2 => 'Cliente'
+        ]);
+
+        define('PAGINAS', [
+            1 => 'usuarios',
+            2 => 'investimento',
+            3 => 'extrato',
+            4 => 'home',
+            5 => 'emprestimo',
+            6 => 'conta',
+            7 => 'agencia',
+            8 => 'banco'
+        ]);
+
+        define('TIPOS_INVESTIMENTO', [
+            1 => 'Fundo Imobiliário',
+            2 => 'Tesouro Direto',
+            3 => 'Renda Variável',
+            4 => 'Renda Fixa'
+        ]);
+
+        $this->loadPermissions();
+        $this->loadPublicRoutes();
+        $this->loadAdminRoutes();
 
         $this->url();
     }
@@ -64,7 +116,7 @@ class App
 
         if (!$this->controller) {
             $this->controller = new HomeController($this);
-            $this->controller->index();
+            $this->controller->loadIndex();
         }
 
         if (!file_exists(PATH . '/App/Controllers/' . $this->controllerFile)) {
@@ -77,6 +129,8 @@ class App
         if (!class_exists($nomeClasse)) {
             throw new Exception("Erro na aplicação", 500);
         }
+
+        $this->checkAuthenticationAndPermission();
 
         if (method_exists($objetoController, $this->action)) {
             $objetoController->{$this->action}($this->params);
@@ -95,20 +149,71 @@ class App
         if (isset($_GET['url'])) {
 
             $path = $_GET['url'];
+
             $path = rtrim($path, '/');
+
             $path = filter_var($path, FILTER_SANITIZE_URL);
 
             $path = explode('/', $path);
 
             $this->controller = $this->verificaArray($path, 0);
-            $this->action = $this->verificaArray($path, 1);
+            $this->action = $this->formatActionName($this->verificaArray($path, 1));
+
+
+            $key = array_search($this->controller, PAGINAS);
+
+            $this->currentPage = PAGINAS[$key];
 
             if ($this->verificaArray($path, 2)) {
                 unset($path[0]);
                 unset($path[1]);
+
                 $this->params = array_values($path);
             }
         }
+    }
+
+    private function loadPermissions()
+    {
+        $userPermissions = [
+            'perfil' => 'Cliente',
+            'alterar-senha' => 'Cliente',
+            'alterar-documento' => 'Cliente',
+            'alterar-email' => 'Cliente'
+        ];
+
+        $investimentPermissions = [
+            'cadastroInvestimento' => 'Cliente',
+            'salvar' => 'Cliente'
+        ];
+
+        $this->permissions = [
+            PAGINAS[1] => $userPermissions,
+            PAGINAS[2] => $investimentPermissions
+        ];
+    }
+
+    private function loadPublicRoutes()
+    {
+        $this->userPublicRoutes = [
+            'cadastro',
+            'login',
+            'autenticar',
+            'cadastrar'
+        ];
+
+
+    }
+
+    private function loadAdminRoutes()
+    {
+        $this->adminRoutes = [
+            'registro',
+            'editar',
+            'exclusao',
+            'index'
+        ];
+
     }
 
     private function verificaArray($array, $key)
@@ -117,5 +222,51 @@ class App
             return $array[$key];
         }
         return null;
+    }
+
+    private function formatActionName($action)
+    {
+        $parts = explode('-', $action);
+        $formattedAction = '';
+
+        foreach ($parts as $part) {
+            $formattedAction .= ucfirst($part);
+        }
+
+        return lcfirst($formattedAction);
+    }
+
+    private function checkAuthenticationAndPermission()
+    {
+
+        $route = !isset($this->action) || $this->action === '' ? 'index' : $this->action;
+
+        if (in_array($route, $this->userPublicRoutes)) {
+            if (Autenticacao::isAuthenticated()) {
+                header("Location: {$this->appHost}"); // Redirecionar para a página de boas-vindas
+                exit;
+            }
+            return;
+        }
+
+        if ($this->currentPage !== PAGINAS[4]) {
+
+            if (!Autenticacao::isAuthenticated()) {
+
+                Autenticacao::redirectToLogin();
+
+
+            } else {
+
+                if (in_array($route, $this->adminRoutes)) {
+                    Autenticacao::checkPermission(TIPOS_USUARIO[1]);
+                } else {
+                    if (isset($this->permissions[$this->currentPage][$route])) {
+                        $requiredPermission = $this->permissions[$this->currentPage][$route];
+                        Autenticacao::checkPermission($requiredPermission);
+                    }
+                }
+            }
+        }
     }
 }

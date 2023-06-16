@@ -26,6 +26,11 @@ class Emprestimo
         return $this->id_conta;
     }
 
+    public function setIdConta($idConta): void
+    {
+        $this->id_conta = $idConta;
+    }
+
     public function getValor(): float
     {
         return $this->valor;
@@ -34,6 +39,13 @@ class Emprestimo
     public function setValor(float $valor): void
     {
         $this->valor = $valor;
+    }
+
+    public function getValorFormatado(): string
+    {
+        $valor = $this->valor;
+        $valorFormatado = number_format($valor, 2, ',', '.');
+        return 'R$ ' . $valorFormatado; // Adapte para o símbolo de moeda desejado
     }
 
     public function getTaxa(): float

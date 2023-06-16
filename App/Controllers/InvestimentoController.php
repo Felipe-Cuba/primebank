@@ -24,152 +24,189 @@ class InvestimentoController extends Controller
 
         Sessao::clearMessage();
     }
-    public function registro()
-    {
-        $this->render('investimento/registro');
 
-        Sessao::clearForm();
-        Sessao::clearError();
+    public function cadastroInvestimento()
+    {
+        $this->render('/investimento/cadastro-investimento');
+
         Sessao::clearMessage();
     }
+
     public function salvar()
     {
+        $f = $_POST;
 
-        /* 
-        Esse trecho de código está pegando o primeiro usuário da tabela para criar um investimento com a conta dele
-        pois no exato momento ainda não há controle de sessão no sistema.
+        $id_usuario = Sessao::get('usuario_id');
 
-        ELE SERÁ RETIRADO NA VERSÃO FINAL DO PROJETO
-        */
-        $usuarioDAO = new UsuarioDAO();
-        $usuarios = $usuarioDAO->listar();
+        $valor = $f['valor'];
+        $tipo_investimento = $f['tipo_investimento'];
 
-        if (!count($usuarios)) {
-            Sessao::recordMessage('Não existem usuários cadastrados!');
-            $this->redirect('/investimento/registro');
-        }
+        $taxaJuros = $this->getTaxaJuros();
 
-        $conditions = [
-            'id_usuario' => $usuarios[0]->getId()
+        $contaDAO = new ContaDAO();
+
+        $conta = $contaDAO->buscarPorUsuario($id_usuario);
+
+    }
+
+    private function getTaxaJuros()
+    {
+        $taxaJuros = [
+            TIPOS_INVESTIMENTO[1] => 0.05,
+            TIPOS_INVESTIMENTO[2] => 0.03,
+            TIPOS_INVESTIMENTO[3] => 0.08,
+            TIPOS_INVESTIMENTO[4] => 0.02
         ];
 
-        $contaDAO = new ContaDAO();
-
-        $contas = $contaDAO->buscar($conditions);
-
-        if (!count($contas)) {
-            Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
-            $this->redirect('/investimento/registro');
-        }
-
-        //  Fim do trecho para buscar uma conta para realizar o cadastro!
-
-
-        $f = $_POST;
-        $Investimento = new Investimento();
-        $Investimento->setTipoInvestimento($f['tipo']);
-        $Investimento->setValor($f['valor']);
-        $Investimento->setTaxa($f['taxa']);
-        $Investimento->setIdConta($contas[0]->getId());
-
-        Sessao::recordForm($f);
-        $InvestimentoDAO = new InvestimentoDAO();
-        if ($InvestimentoDAO->salvar($Investimento)) {
-            $this->redirect('/investimento');
-        } else {
-            Sessao::recordMessage('Ocorreu um erro!');
-        }
+        return $taxaJuros;
     }
 
-    public function edicao($params)
-    {
-        $id = $params[0];
+    // public function registro()
+    // {
+    //     $this->render('investimento/registro');
 
-        $investimentoDAO = new InvestimentoDAO();
+    //     Sessao::clearForm();
+    //     Sessao::clearError();
+    //     Sessao::clearMessage();
+    // }
+    // public function salvar()
+    // {
 
-        $investimento = $investimentoDAO->buscaId($id);
+    //     /*
+    //     Esse trecho de código está pegando o primeiro usuário da tabela para criar um investimento com a conta dele
+    //     pois no exato momento ainda não há controle de sessão no sistema.
 
-        if (!$investimento) {
-            Sessao::recordMessage("Investimento inexistente");
-            $this->redirect('/investimento');
-        }
+    //     ELE SERÁ RETIRADO NA VERSÃO FINAL DO PROJETO
+    //     */
+    //     $usuarioDAO = new UsuarioDAO();
+    //     $usuarios = $usuarioDAO->listar();
 
-        self::setViewParam('investimento', $investimento);
+    //     if (!count($usuarios)) {
+    //         Sessao::recordMessage('Não existem usuários cadastrados!');
+    //         $this->redirect('/investimento/registro');
+    //     }
 
-        $this->render('/investimento/editar');
+    //     $conditions = [
+    //         'id_usuario' => $usuarios[0]->getId()
+    //     ];
 
-        Sessao::clearMessage();
-    }
+    //     $contaDAO = new ContaDAO();
 
-    public function atualizar()
-    {
-        $f = $_POST;
-        print_r($f);
-        $investimento = new Investimento();
-        $investimento->setId($f['id']);
-        $investimento->setIdConta($f['id_conta']);
-        $investimento->setTaxa($f['taxa']);
-        $investimento->setTipoInvestimento($f['tipo']);
-        $investimento->setValor($f['valor']);
+    //     $contas = $contaDAO->buscar($conditions);
 
-        Sessao::recordForm($f);
+    //     if (!count($contas)) {
+    //         Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
+    //         $this->redirect('/investimento/registro');
+    //     }
 
-        $investimentoValidador = new InvestimentoValidador();
-        $resultadoValidacao = $investimentoValidador->validar($investimento);
+    //     //  Fim do trecho para buscar uma conta para realizar o cadastro!
 
-        if ($resultadoValidacao->getErros()) {
-            Sessao::recordError($resultadoValidacao->getErros());
-            $this->redirect('/investimento/edicao/' . $f['id']);
-        }
 
-        $investimentoDAO = new InvestimentoDAO();
+    //     $f = $_POST;
+    //     $Investimento = new Investimento();
+    //     $Investimento->setTipoInvestimento($f['tipo']);
+    //     $Investimento->setValor($f['valor']);
+    //     $Investimento->setTaxa($f['taxa']);
+    //     $Investimento->setIdConta($contas[0]->getId());
 
-        $investimentoDAO->atualizar($investimento);
+    //     Sessao::recordForm($f);
+    //     $InvestimentoDAO = new InvestimentoDAO();
+    //     if ($InvestimentoDAO->salvar($Investimento)) {
+    //         $this->redirect('/investimento');
+    //     } else {
+    //         Sessao::recordMessage('Ocorreu um erro!');
+    //     }
+    // }
 
-        Sessao::clearForm();
-        Sessao::clearMessage();
-        Sessao::clearError();
+    // public function edicao($params)
+    // {
+    //     $id = $params[0];
 
-        $this->redirect('/investimento');
-    }
+    //     $investimentoDAO = new InvestimentoDAO();
 
-    public function exclusao($params)
-    {
-        $id = $params[0];
+    //     $investimento = $investimentoDAO->buscaId($id);
 
-        $investimentoDAO = new InvestimentoDAO();
+    //     if (!$investimento) {
+    //         Sessao::recordMessage("Investimento inexistente");
+    //         $this->redirect('/investimento');
+    //     }
 
-        $investimento = $investimentoDAO->buscaId($id);
+    //     self::setViewParam('investimento', $investimento);
 
-        $contaDAO = new ContaDAO();
-        self::setViewParam('listaContas', $contaDAO->listar());
+    //     $this->render('/investimento/editar');
 
-        if (!$investimento) {
-            Sessao::recordMessage("Investimento inexistente!");
-            $this->redirect('/investimento');
-        }
+    //     Sessao::clearMessage();
+    // }
 
-        self::setViewParam('investimento', $investimento);
+    // public function atualizar()
+    // {
+    //     $f = $_POST;
+    //     print_r($f);
+    //     $investimento = new Investimento();
+    //     $investimento->setId($f['id']);
+    //     $investimento->setIdConta($f['id_conta']);
+    //     $investimento->setTaxa($f['taxa']);
+    //     $investimento->setTipoInvestimento($f['tipo']);
+    //     $investimento->setValor($f['valor']);
 
-        $this->render('/investimento/exclusao');
+    //     Sessao::recordForm($f);
 
-        Sessao::clearMessage();
-    }
+    //     $investimentoValidador = new InvestimentoValidador();
+    //     $resultadoValidacao = $investimentoValidador->validar($investimento);
 
-    public function excluir()
-    {
-        $f = $_POST;
-        $investimento = new Investimento();
-        $investimento->setId($f['id']);
+    //     if ($resultadoValidacao->getErros()) {
+    //         Sessao::recordError($resultadoValidacao->getErros());
+    //         $this->redirect('/investimento/edicao/' . $f['id']);
+    //     }
 
-        $investimentoDAO = new InvestimentoDAO();
+    //     $investimentoDAO = new InvestimentoDAO();
 
-        if (!$investimentoDAO->excluir($investimento)) {
-            Sessao::recordMessage('Investimento Inexistente!');
-            $this->redirect('/investimento');
-        }
+    //     $investimentoDAO->atualizar($investimento);
 
-        Sessao::recordMessage('Investimento excluido com sucesso!');
-        $this->redirect('/investimento');
-    }
+    //     Sessao::clearForm();
+    //     Sessao::clearMessage();
+    //     Sessao::clearError();
+
+    //     $this->redirect('/investimento');
+    // }
+
+    // public function exclusao($params)
+    // {
+    //     $id = $params[0];
+
+    //     $investimentoDAO = new InvestimentoDAO();
+
+    //     $investimento = $investimentoDAO->buscaId($id);
+
+    //     $contaDAO = new ContaDAO();
+    //     self::setViewParam('listaContas', $contaDAO->listar());
+
+    //     if (!$investimento) {
+    //         Sessao::recordMessage("Investimento inexistente!");
+    //         $this->redirect('/investimento');
+    //     }
+
+    //     self::setViewParam('investimento', $investimento);
+
+    //     $this->render('/investimento/exclusao');
+
+    //     Sessao::clearMessage();
+    // }
+
+    // public function excluir()
+    // {
+    //     $f = $_POST;
+    //     $investimento = new Investimento();
+    //     $investimento->setId($f['id']);
+
+    //     $investimentoDAO = new InvestimentoDAO();
+
+    //     if (!$investimentoDAO->excluir($investimento)) {
+    //         Sessao::recordMessage('Investimento Inexistente!');
+    //         $this->redirect('/investimento');
+    //     }
+
+    //     Sessao::recordMessage('Investimento excluido com sucesso!');
+    //     $this->redirect('/investimento');
+    // }
 }

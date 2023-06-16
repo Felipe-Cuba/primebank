@@ -90,7 +90,7 @@ class UsuariosController extends Controller
             $Conta->setNumero($ContaDAO->generateAccountNumber());
 
             if ($ContaDAO->salvar($Conta)) {
-                $this->redirect("usuarios/perfil?id={$Usuario->getId()}");
+                $this->redirect("/usuarios/login");
             } else {
                 Sessao::recordMessage('Ocorreu um erro!');
             }

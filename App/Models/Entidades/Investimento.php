@@ -9,6 +9,7 @@ class Investimento
     private string $tipo_investimento;
     private float $taxa;
     private float $valor;
+    private float $valor_taxado;
 
     public function getId(): int
     {
@@ -65,6 +66,23 @@ class Investimento
     public function setValor($valor): void
     {
         $this->valor = $valor;
+    }
+
+    public function getValorTaxado(): float
+    {
+        return $this->valor_taxado;
+    }
+
+    public function setValorTaxado($value): void
+    {
+        $this->valor_taxado = $value;
+    }
+
+    public function getValorTaxadoFormatado(): string
+    {
+        $valor = $this->valor_taxado;
+        $valorFormatado = number_format($valor, 2, ',', '.');
+        return 'R$ ' . $valorFormatado; // Adapte para o símbolo de moeda desejado
     }
 
 }

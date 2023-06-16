@@ -17,7 +17,7 @@ class Autenticacao
     }
   }
 
-  private static function redirectToLogin()
+  public static function redirectToLogin()
   {
     header('Location: /primebank/usuarios/login');
     exit;

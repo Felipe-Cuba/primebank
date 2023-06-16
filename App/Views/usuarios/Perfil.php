@@ -53,7 +53,7 @@ $primeiroNome = explode(' ', $nomeCompleto)[0];
                         <div class="card my-5">
                             <span class="title m-0 span-0 text-center">Ações disponíves</span>
                             <div class="row d-flex flex-colunm align-items-center text-center">
-                                <a class="my-2 btn btn-secondary">Extrato</a>
+                                <a href="http://<?php echo APP_HOST; ?>/extrato/extrato-conta"class="my-2 btn btn-secondary">Extrato</a>
                                 <a href="http://<?php echo APP_HOST; ?>/conta/transacao/3"
                                     class="my-2 btn btn-secondary">Pagamento</a>
                                 <a href="http://<?php echo APP_HOST; ?>/conta/transacao/2"

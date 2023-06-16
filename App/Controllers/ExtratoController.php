@@ -3,11 +3,11 @@
 namespace App\Controllers;
 
 use App\Models\DAO\ContaDAO;
-use App\Models\DAO\UsuarioDAO;
+// use App\Models\DAO\UsuarioDAO;
 use App\Lib\Sessao;
 use App\Models\DAO\ExtratoDAO;
-use App\Models\Entidades\Extrato;
-use App\Models\Validacao\ExtratoValidador;
+// use App\Models\Entidades\Extrato;
+// use App\Models\Validacao\ExtratoValidador;
 
 class ExtratoController extends Controller
 {
@@ -23,166 +23,189 @@ class ExtratoController extends Controller
 
         Sessao::clearMessage();
     }
-    public function registro()
+
+    public function extratoConta()
     {
-        $this->render('extrato/registro');
 
-        Sessao::clearForm();
-        Sessao::clearError();
-        Sessao::clearMessage();
-    }
+        $id = Sessao::get('usuario_id');
 
-
-    public function salvar()
-    {
-        /* 
-        Esse trecho de código está pegando o primeiro usuário da tabela para criar um extrato com a conta dele
-        pois no exato momento ainda não há controle de sessão no sistema.
-
-        ELE SERÁ RETIRADO NA VERSÃO FINAL DO PROJETO
-        */
-        $usuarioDAO = new UsuarioDAO();
-        $usuarios = $usuarioDAO->listar();
-
-        if (!count($usuarios)) {
-            Sessao::recordMessage('Não existem usuários cadastrados!');
-            $this->redirect('/extrato/registro');
-        }
-
-        $conditions = [
-            'id_usuario' => $usuarios[0]->getId()
-        ];
-
+        $extratoDAO = new ExtratoDAO();
         $contaDAO = new ContaDAO();
 
-        $contas = $contaDAO->buscar($conditions);
+        $conta = $contaDAO->buscarPorUsuario($id);
 
-        if (!count($contas)) {
-            Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
-            $this->redirect('/extrato/registro');
-        }
-        //  Fim do trecho para buscar uma conta para realizar o cadastro!
+        $extratos = $extratoDAO->buscar(['id_conta' => $conta->getId()]);
 
-        $conta = $contas[0];
 
-        $f = $_POST;
-        $Extrato = new Extrato();
-        $Extrato->setValor($f['valor']);
-        $Extrato->setAcao($f['acao']);
-        $Extrato->setIdConta($conta->getId());
 
-        if ($Extrato->getAcao() === "deposito") {
-            $conta->setSaldo($conta->getSaldo() + $Extrato->getValor());
-            $contaDAO->atualizar($conta);
-        }
+        self::setViewParam('listaExtratos', $extratos);
+        self::setViewParam('contaExtrato', $conta);
 
-        if ($Extrato->getAcao() === "saque" || $Extrato->getAcao() === "pagamento") {
-            if ($conta->getSaldo() < $Extrato->getValor()) {
-                Sessao::recordMessage('Saldo insuficiente ');
-                $this->redirect('/extrato/registro');
-            } else {
-                $conta->setSaldo($conta->getSaldo() - $Extrato->getValor());
-                $contaDAO->atualizar($conta);
-            }
-        }
-
-        Sessao::recordForm($f);
-        $ExtratoDAO = new ExtratoDAO();
-        if ($ExtratoDAO->salvar($Extrato)) {
-            $this->redirect('/extrato');
-        } else {
-            Sessao::recordMessage('Ocorreu um erro!');
-        }
-    }
-
-    public function edicao($params)
-    {
-        $id = $params[0];
-
-        $extratoDAO = new ExtratoDAO();
-
-        $extrato = $extratoDAO->buscaId($id);
-
-        if (!$extrato) {
-            Sessao::recordMessage("Extrato inexistente");
-            $this->redirect('/extrato');
-        }
-
-        self::setViewParam('extrato', $extrato);
-
-        $this->render('/extrato/editar');
+        $this->render('/extrato/extrato-conta');
 
         Sessao::clearMessage();
     }
 
-    public function atualizar()
-    {
-        $f = $_POST;
-        print_r($f);
-        $extrato = new Extrato();
-        $extrato->setId($f['id']);
-        $extrato->setIdConta($f['id_conta']);
-        $extrato->setValor($f['valor']);
-        $extrato->setAcao($f['acao']);
+    // public function registro()
+    // {
+    //     $this->render('extrato/registro');
+
+    //     Sessao::clearForm();
+    //     Sessao::clearError();
+    //     Sessao::clearMessage();
+    // }
 
 
-        Sessao::recordForm($f);
+    // public function salvar()
+    // {
+    //     /*
+    //     Esse trecho de código está pegando o primeiro usuário da tabela para criar um extrato com a conta dele
+    //     pois no exato momento ainda não há controle de sessão no sistema.
 
-        $extratoValidador = new ExtratoValidador();
-        $resultadoValidacao = $extratoValidador->validar($extrato);
+    //     ELE SERÁ RETIRADO NA VERSÃO FINAL DO PROJETO
+    //     */
+    //     $usuarioDAO = new UsuarioDAO();
+    //     $usuarios = $usuarioDAO->listar();
 
-        if ($resultadoValidacao->getErros()) {
-            Sessao::recordError($resultadoValidacao->getErros());
-            $this->redirect('/extrato/edicao/' . $f['id']);
-        }
+    //     if (!count($usuarios)) {
+    //         Sessao::recordMessage('Não existem usuários cadastrados!');
+    //         $this->redirect('/extrato/registro');
+    //     }
 
-        $investimentoDAO = new ExtratoDAO();
+    //     $conditions = [
+    //         'id_usuario' => $usuarios[0]->getId()
+    //     ];
 
-        $investimentoDAO->atualizar($extrato);
+    //     $contaDAO = new ContaDAO();
 
-        Sessao::clearForm();
-        Sessao::clearMessage();
-        Sessao::clearError();
+    //     $contas = $contaDAO->buscar($conditions);
 
-        $this->redirect('/extrato');
-    }
-    public function exclusao($params)
-    {
-        $id = $params[0];
+    //     if (!count($contas)) {
+    //         Sessao::recordMessage('Não existem contas cadastradas para esse usuário cadastrados!');
+    //         $this->redirect('/extrato/registro');
+    //     }
+    //     //  Fim do trecho para buscar uma conta para realizar o cadastro!
 
-        $extratoDAO = new ExtratoDAO();
+    //     $conta = $contas[0];
 
-        $extrato = $extratoDAO->buscaId($id);
+    //     $f = $_POST;
+    //     $Extrato = new Extrato();
+    //     $Extrato->setValor($f['valor']);
+    //     $Extrato->setAcao($f['acao']);
+    //     $Extrato->setIdConta($conta->getId());
 
-        $contaDAO = new ContaDAO();
-        self::setViewParam('listaContas', $contaDAO->listar());
+    //     if ($Extrato->getAcao() === "deposito") {
+    //         $conta->setSaldo($conta->getSaldo() + $Extrato->getValor());
+    //         $contaDAO->atualizar($conta);
+    //     }
 
-        if (!$extrato) {
-            Sessao::recordMessage("Extrato inexistente!");
-            $this->redirect('/extrato');
-        }
+    //     if ($Extrato->getAcao() === "saque" || $Extrato->getAcao() === "pagamento") {
+    //         if ($conta->getSaldo() < $Extrato->getValor()) {
+    //             Sessao::recordMessage('Saldo insuficiente ');
+    //             $this->redirect('/extrato/registro');
+    //         } else {
+    //             $conta->setSaldo($conta->getSaldo() - $Extrato->getValor());
+    //             $contaDAO->atualizar($conta);
+    //         }
+    //     }
 
-        self::setViewParam('extrato', $extrato);
+    //     Sessao::recordForm($f);
+    //     $ExtratoDAO = new ExtratoDAO();
+    //     if ($ExtratoDAO->salvar($Extrato)) {
+    //         $this->redirect('/extrato');
+    //     } else {
+    //         Sessao::recordMessage('Ocorreu um erro!');
+    //     }
+    // }
 
-        $this->render('/extrato/exclusao');
+    // public function edicao($params)
+    // {
+    //     $id = $params[0];
 
-        Sessao::clearMessage();
-    }
+    //     $extratoDAO = new ExtratoDAO();
 
-    public function excluir()
-    {
-        $f = $_POST;
-        $extrato = new Extrato();
-        $extrato->setId($f['id']);
+    //     $extrato = $extratoDAO->buscaId($id);
 
-        $extratoDAO = new ExtratoDAO();
+    //     if (!$extrato) {
+    //         Sessao::recordMessage("Extrato inexistente");
+    //         $this->redirect('/extrato');
+    //     }
 
-        if (!$extratoDAO->excluir($extrato)) {
-            Sessao::recordMessage('Extrato Inexistente!');
-            $this->redirect('/extrato');
-        }
+    //     self::setViewParam('extrato', $extrato);
 
-        Sessao::recordMessage('Extrato excluido com sucesso!');
-        $this->redirect('/extrato');
-    }
+    //     $this->render('/extrato/editar');
+
+    //     Sessao::clearMessage();
+    // }
+
+    // public function atualizar()
+    // {
+    //     $f = $_POST;
+    //     print_r($f);
+    //     $extrato = new Extrato();
+    //     $extrato->setId($f['id']);
+    //     $extrato->setIdConta($f['id_conta']);
+    //     $extrato->setValor($f['valor']);
+    //     $extrato->setAcao($f['acao']);
+
+
+    //     Sessao::recordForm($f);
+
+    //     $extratoValidador = new ExtratoValidador();
+    //     $resultadoValidacao = $extratoValidador->validar($extrato);
+
+    //     if ($resultadoValidacao->getErros()) {
+    //         Sessao::recordError($resultadoValidacao->getErros());
+    //         $this->redirect('/extrato/edicao/' . $f['id']);
+    //     }
+
+    //     $investimentoDAO = new ExtratoDAO();
+
+    //     $investimentoDAO->atualizar($extrato);
+
+    //     Sessao::clearForm();
+    //     Sessao::clearMessage();
+    //     Sessao::clearError();
+
+    //     $this->redirect('/extrato');
+    // }
+    // public function exclusao($params)
+    // {
+    //     $id = $params[0];
+
+    //     $extratoDAO = new ExtratoDAO();
+
+    //     $extrato = $extratoDAO->buscaId($id);
+
+    //     $contaDAO = new ContaDAO();
+    //     self::setViewParam('listaContas', $contaDAO->listar());
+
+    //     if (!$extrato) {
+    //         Sessao::recordMessage("Extrato inexistente!");
+    //         $this->redirect('/extrato');
+    //     }
+
+    //     self::setViewParam('extrato', $extrato);
+
+    //     $this->render('/extrato/exclusao');
+
+    //     Sessao::clearMessage();
+    // }
+
+    // public function excluir()
+    // {
+    //     $f = $_POST;
+    //     $extrato = new Extrato();
+    //     $extrato->setId($f['id']);
+
+    //     $extratoDAO = new ExtratoDAO();
+
+    //     if (!$extratoDAO->excluir($extrato)) {
+    //         Sessao::recordMessage('Extrato Inexistente!');
+    //         $this->redirect('/extrato');
+    //     }
+
+    //     Sessao::recordMessage('Extrato excluido com sucesso!');
+    //     $this->redirect('/extrato');
+    // }
 }

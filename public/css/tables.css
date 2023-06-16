@@ -37,3 +37,15 @@
 .table-dark.table-striped tbody tr:nth-of-type(odd) {
   background-color: rgba(255, 255, 255, 0.05);
 }
+
+.extrato-valor {
+  font-size: 15px !important;
+}
+
+.value-green {
+  color: #479129;
+}
+
+.value-red {
+  color: #ff5959
+}

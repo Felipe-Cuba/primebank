@@ -55,7 +55,7 @@
                                         <?= $user->getDataCadastro()->format('d/m/Y') ?>
                                     </td>
                                     <td>
-                                        <?= $user->getTipo() ?>
+                                        <?= TIPOS_USUARIO[$user->getTipo()] ?>
                                     </td>
 
                                     <td>

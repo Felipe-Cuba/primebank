@@ -88,7 +88,7 @@ CREATE TABLE
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_conta` INT NOT NULL,
         `valor` FLOAT NOT NULL,
-        `acao` VARCHAR(8) NOT NULL,
+        `acao` VARCHAR(10) NOT NULL,
         `data_cadastro` DATETIME GENERATED ALWAYS AS (NOW()) VIRTUAL,
         PRIMARY KEY (`id`),
         INDEX `fk_extrato_conta1_idx` (`id_conta` ASC),

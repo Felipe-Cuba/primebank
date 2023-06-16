@@ -13,10 +13,14 @@ class App
     private $action;
     private $params;
 
-    private array $userPermissions;
+    private array $adminRoutes;
     private array $userPublicRoutes;
 
+    private array $permissions;
+
     private string $appHost;
+
+    private string $currentPage;
 
     public $controllerName;
 
@@ -53,8 +57,27 @@ class App
             2 => 'Cliente'
         ]);
 
+        define('PAGINAS', [
+            1 => 'usuarios',
+            2 => 'investimento',
+            3 => 'extrato',
+            4 => 'home',
+            5 => 'emprestimo',
+            6 => 'conta',
+            7 => 'agencia',
+            8 => 'banco'
+        ]);
+
+        define('TIPOS_INVESTIMENTO', [
+            1 => 'Fundo Imobiliário',
+            2 => 'Tesouro Direto',
+            3 => 'Renda Variável',
+            4 => 'Renda Fixa'
+        ]);
+
         $this->loadPermissions();
         $this->loadPublicRoutes();
+        $this->loadAdminRoutes();
 
         $this->url();
     }
@@ -93,7 +116,7 @@ class App
 
         if (!$this->controller) {
             $this->controller = new HomeController($this);
-            $this->controller->index();
+            $this->controller->loadIndex();
         }
 
         if (!file_exists(PATH . '/App/Controllers/' . $this->controllerFile)) {
@@ -126,13 +149,20 @@ class App
         if (isset($_GET['url'])) {
 
             $path = $_GET['url'];
+
             $path = rtrim($path, '/');
+
             $path = filter_var($path, FILTER_SANITIZE_URL);
 
             $path = explode('/', $path);
 
             $this->controller = $this->verificaArray($path, 0);
             $this->action = $this->formatActionName($this->verificaArray($path, 1));
+
+
+            $key = array_search($this->controller, PAGINAS);
+
+            $this->currentPage = PAGINAS[$key];
 
             if ($this->verificaArray($path, 2)) {
                 unset($path[0]);
@@ -145,15 +175,21 @@ class App
 
     private function loadPermissions()
     {
-        $this->userPermissions = [
-            'registro' => 'Administrador',
-            'editar' => 'Administrador',
-            'exclusao' => 'Administrador',
-            'index' => 'Administrador',
+        $userPermissions = [
             'perfil' => 'Cliente',
             'alterar-senha' => 'Cliente',
             'alterar-documento' => 'Cliente',
             'alterar-email' => 'Cliente'
+        ];
+
+        $investimentPermissions = [
+            'cadastroInvestimento' => 'Cliente',
+            'salvar' => 'Cliente'
+        ];
+
+        $this->permissions = [
+            PAGINAS[1] => $userPermissions,
+            PAGINAS[2] => $investimentPermissions
         ];
     }
 
@@ -161,8 +197,23 @@ class App
     {
         $this->userPublicRoutes = [
             'cadastro',
-            'login'
+            'login',
+            'autenticar',
+            'cadastrar'
         ];
+
+
+    }
+
+    private function loadAdminRoutes()
+    {
+        $this->adminRoutes = [
+            'registro',
+            'editar',
+            'exclusao',
+            'index'
+        ];
+
     }
 
     private function verificaArray($array, $key)
@@ -187,24 +238,35 @@ class App
 
     private function checkAuthenticationAndPermission()
     {
+
         $route = !isset($this->action) || $this->action === '' ? 'index' : $this->action;
 
+        if (in_array($route, $this->userPublicRoutes)) {
+            if (Autenticacao::isAuthenticated()) {
+                header("Location: {$this->appHost}"); // Redirecionar para a página de boas-vindas
+                exit;
+            }
+            return;
+        }
 
-        if ($this->controller === 'usuarios') {
+        if ($this->currentPage !== PAGINAS[4]) {
 
-            if (in_array($route, $this->userPublicRoutes)) {
-                if (Autenticacao::isAuthenticated()) {
-                    header("Location: {$this->appHost}"); // Redirecionar para a página de boas-vindas
-                    exit;
+            if (!Autenticacao::isAuthenticated()) {
+
+                Autenticacao::redirectToLogin();
+
+
+            } else {
+
+                if (in_array($route, $this->adminRoutes)) {
+                    Autenticacao::checkPermission(TIPOS_USUARIO[1]);
+                } else {
+                    if (isset($this->permissions[$this->currentPage][$route])) {
+                        $requiredPermission = $this->permissions[$this->currentPage][$route];
+                        Autenticacao::checkPermission($requiredPermission);
+                    }
                 }
-                return;
             }
-
-            if (isset($this->userPermissions[$route])) {
-                $requiredPermission = $this->userPermissions[$route];
-                Autenticacao::checkPermission($requiredPermission);
-            }
-
         }
     }
 }

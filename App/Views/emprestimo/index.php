@@ -1,8 +1,8 @@
 <div class="container my-3">
   <div class="row">
-    <div class="col-md-12">
+    <!-- <div class="col-md-12">
       <a href="http://<?= APP_HOST ?>/emprestimo/registro" class="btn btn-secondary btn-sm">Adicionar</a>
-    </div>
+    </div> -->
 
     <div class="col-md-12 mt-3">
       <?php if ($Sessao::returnMessage()) { ?>
@@ -14,7 +14,7 @@
       <?php
       if (!count($viewVar['listaEmprestimos'])) {
         ?>
-        <div class="alert alert-info" role="alert">Nenhum investimento encontrado</div>
+        <div class="alert alert-info" role="alert">Nenhum emprestimo encontrado</div>
         <?php
       } else {
         ?>
@@ -29,7 +29,6 @@
                 <th>Valor</th>
                 <th>Parcelas</th>
                 <th>Parcelas Pagas</th>
-                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -59,14 +58,6 @@
                   </td>
                   <td>
                     <?= $emprestimo->getParcelasPagas() ?>
-                  </td>
-
-
-                  <td>
-                    <a href="http://<?= APP_HOST ?>/emprestimo/edicao/<?= $emprestimo->getId() ?>"
-                      class="btn btn-primary btn-sm">Editar</a>
-                    <a href="http://<?= APP_HOST ?>/emprestimo/exclusao/<?= $emprestimo->getId() ?>"
-                      class="btn btn-danger btn-sm">Excluir</a>
                   </td>
                 </tr>
               <?php } ?>

@@ -1,8 +1,8 @@
 <div class="container my-3">
   <div class="row">
-    <div class="col-md-12">
+    <!-- <div class="col-md-12">
       <a href="http://<?= APP_HOST ?>/investimento/registro" class="btn btn-secondary btn-sm">Adicionar</a>
-    </div>
+    </div> -->
 
     <div class="col-md-12 mt-3">
       <?php if ($Sessao::returnMessage()) { ?>
@@ -28,7 +28,7 @@
                 <th>Tipo de investimento</th>
                 <th>Taxa</th>
                 <th>Valor</th>
-                <th>Ações</th>
+                <!-- <th>Ações</th> -->
               </tr>
             </thead>
             <tbody>
@@ -55,13 +55,6 @@
                   </td>
                   <td>
                     <?= $investimento->getValorFormatado() ?>
-                  </td>
-
-                  <td>
-                    <a href="http://<?= APP_HOST ?>/investimento/edicao/<?= $investimento->getId() ?>"
-                      class="btn btn-primary btn-sm">Editar</a>
-                    <a href="http://<?= APP_HOST ?>/investimento/exclusao/<?= $investimento->getId() ?>"
-                      class="btn btn-danger btn-sm">Excluir</a>
                   </td>
                 </tr>
               <?php } ?>

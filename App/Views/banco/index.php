@@ -48,8 +48,6 @@
                   <td>
                     <a href="http://<?= APP_HOST ?>/banco/edicao/<?= $banco->getId() ?>"
                       class="btn btn-primary btn-sm">Editar</a>
-                    <a href="http://<?= APP_HOST ?>/banco/exclusao/<?= $banco->getId() ?>"
-                      class="btn btn-danger btn-sm">Excluir</a>
                   </td>
                 </tr>
               <?php } ?>

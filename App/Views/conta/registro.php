@@ -36,14 +36,6 @@
           </select>
         </div>
         <div class="mt-2">
-          <label class="form-lable" for="numero">Numero da conta:</label>
-          <input type="text" class="form-control" id="numero" name="numero" step="0.01" required>
-        </div>
-        <div class="mt-2">
-          <label class="form-lable" for="saldo">Saldo:</label>
-          <input type="number" class="form-control" id="saldo" name="saldo" step="0.01" required>
-        </div>
-        <div class="mt-2">
           <label class="form-lable" for="id_usuario">Usuário:</label>
           <select class="form-control" id="id_usuario" name="id_usuario" required>
             <option value="0">Selecione um usuário</option>

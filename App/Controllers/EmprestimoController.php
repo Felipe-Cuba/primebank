@@ -62,7 +62,9 @@ class EmprestimoController extends Controller
 
         $contaDAO = new ContaDAO();
         $emprestimoDAO = new EmprestimoDAO();
+        $extratoDAO = new ExtratoDAO();
 
+        $extrato = new Extrato();
 
         $valor = $f['valor'];
         $parcelas = $f['parcelas'];
@@ -71,6 +73,7 @@ class EmprestimoController extends Controller
 
         $conta = $contaDAO->buscarPorUsuario($id);
 
+
         $emprestimo = new Emprestimo();
 
         $emprestimo->setIdConta($conta->getId());
@@ -78,6 +81,21 @@ class EmprestimoController extends Controller
         $emprestimo->setParcelasPagas(0);
         $emprestimo->setTaxa($taxa);
         $emprestimo->setValor($valor);
+
+        $conta->setSaldo($conta->getSaldo() + $emprestimo->getValor());
+
+
+        $extrato->setIdConta($conta->getId());
+        $extrato->setAcao(TIPOS_TRANSACAO[2]);
+        $extrato->setValor($emprestimo->getValor());
+
+        if (!$contaDAO->atualizar($conta)) {
+            throw new Exception('Erro interno do servidor', 500);
+        }
+
+        if (!$extratoDAO->salvar($extrato)) {
+            throw new Exception('Erro interno do servidor', 500);
+        }
 
         if ($emprestimoDAO->salvar($emprestimo)) {
             $this->redirect('/emprestimo/lista-emprestimo');

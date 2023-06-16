@@ -14,7 +14,7 @@ class ContaDAO extends BaseDAO
 
     public function salvar(Conta $conta): bool
     {
-        print_r($conta->getIdAgencia());
+
         $data = [
             'id_agencia' => $conta->getIdAgencia(),
             'numero' => $conta->getNumero(),
@@ -29,7 +29,7 @@ class ContaDAO extends BaseDAO
     public function atualizar(Conta $conta): bool
     {
         $data = [
-            'id_agencia' => $conta->getId(),
+            'id_agencia' => $conta->getIdAgencia(),
             'tipo_conta' => $conta->getTipoConta(),
             'saldo' => $conta->getSaldo(),
             'id_usuario' => $conta->getUsuario()

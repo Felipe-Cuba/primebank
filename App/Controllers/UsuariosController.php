@@ -205,33 +205,23 @@ class UsuariosController extends Controller
         $this->render('/usuarios/editar');
 
         Sessao::clearMessage();
+        Sessao::clearMessage();
+        Sessao::clearError();
     }
 
-    public function atualizar()
+    public function atualizar($params)
     {
         $f = $_POST;
-        $Usuario = new Usuario();
-        $Usuario->setId($f['id']);
-        $Usuario->setNome($f['nome']);
-        $Usuario->setEmail($f['email']);
-        $Usuario->setSenha($f['senha']);
-        $Usuario->setDataNasc($f['data_nasc']);
-        $Usuario->setDocumento($f['documento']);
-        $Usuario->setTipo(1);
+        $id = $params[0];
+
+        $usuarioDAO = new UsuarioDAO();
+        $usuario = $usuarioDAO->buscaId($id);
+        $usuario->setNome($f['nome']);
+        $usuario->setEmail($f['email']);
 
         Sessao::recordForm($_POST);
 
-        $usuarioValidador = new UsuarioValidador();
-        $resultadoValidacao = $usuarioValidador->validar($Usuario);
-
-        if ($resultadoValidacao->getErros()) {
-            Sessao::recordError($resultadoValidacao->getErros());
-            $this->redirect('/usuarios/edicao/' . $f['id']);
-        }
-
-        $ususarioDAO = new UsuarioDAO();
-
-        $ususarioDAO->atualizar($Usuario);
+        $usuarioDAO->atualizar($usuario);
 
         Sessao::clearForm();
         Sessao::clearMessage();
@@ -239,43 +229,6 @@ class UsuariosController extends Controller
 
         $this->redirect('/usuarios');
 
-    }
-
-    public function exclusao($params)
-    {
-        $id = $params[0];
-
-        $usuarioDAO = new UsuarioDAO();
-
-        $usuario = $usuarioDAO->buscaId($id);
-
-        if (!$usuario) {
-            Sessao::recordMessage("Usuario inexistente");
-            $this->redirect('/usuarios');
-        }
-
-        self::setViewParam('usuario', $usuario);
-
-        $this->render('/usuarios/exclusao');
-
-        Sessao::clearMessage();
-    }
-
-    public function excluir()
-    {
-        $f = $_POST;
-        $usuario = new Usuario();
-        $usuario->setId($f['id']);
-
-        $usuarioDAO = new UsuarioDAO();
-
-        if (!$usuarioDAO->excluir($usuario)) {
-            Sessao::recordMessage('Usuário Inexistente!');
-            $this->redirect('/usuarios');
-        }
-
-        Sessao::recordMessage('Usuário excluido com sucesso!');
-        $this->redirect('/usuarios');
     }
 
     public function alterarSenha($params)

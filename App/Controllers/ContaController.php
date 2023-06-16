@@ -33,8 +33,11 @@ class ContaController extends Controller
         $agenciaDAO = new AgenciaDAO();
         $usuarioDAO = new UsuarioDAO();
 
+
+
+
         self::setViewParam('agencias', $agenciaDAO->listar());
-        self::setViewParam('usuarios', $usuarioDAO->listar());
+        self::setViewParam('usuarios', $usuarioDAO->buscar(["tipo" => 2]));
 
         $this->render('conta/registro');
 
@@ -46,15 +49,16 @@ class ContaController extends Controller
     public function salvar()
     {
         $f = $_POST;
+        $ContaDAO = new ContaDAO();
+
         $Conta = new Conta();
-        $Conta->setNumero($f['numero']);
-        $Conta->setSaldo($f['saldo']);
+        $Conta->setNumero($ContaDAO->generateAccountNumber());
+        $Conta->setSaldo(0);
         $Conta->setTipoConta($f['tipo_conta']);
         $Conta->setIdAgencia($f['id_agencia']);
         $Conta->setUsuario($f['id_usuario']);
 
         Sessao::recordForm($f);
-        $ContaDAO = new ContaDAO();
 
         if ($ContaDAO->salvar($Conta)) {
             $this->redirect('/conta');
@@ -98,13 +102,16 @@ class ContaController extends Controller
 
         // print_r($f);
 
+
         $contaDAO = new ContaDAO();
 
+        $id_agencia = $f['id_agencia'];
+
         $conta = $contaDAO->buscaId($params[0]);
-        $conta->setIdAgencia($f['id_agencia']);
+        $conta->setIdAgencia($id_agencia);
         $conta->setTipoConta($f['tipo_conta']);
 
-        // print_r($conta->getIdAgencia());
+        print_r($conta->getIdAgencia());
 
         Sessao::recordForm($f);
 
@@ -113,7 +120,7 @@ class ContaController extends Controller
 
         if ($resultadoValidacao->getErros()) {
             Sessao::recordError($resultadoValidacao->getErros());
-            // $this->redirect('/conta/edicao/' . $f['id']);
+            $this->redirect('/conta/edicao/' . $f['id']);
         }
 
 
@@ -123,7 +130,7 @@ class ContaController extends Controller
         Sessao::clearMessage();
         Sessao::clearError();
 
-        // $this->redirect('/conta');
+        $this->redirect('/conta');
     }
 
     public function exclusao($params)
